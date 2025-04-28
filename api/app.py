@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_migrate import Migrate
+from flask_cors import CORS
 
 from api.config import Config
 from api.extensions import db, api, jwt
@@ -8,6 +9,10 @@ from api.resources import __all__
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+
+    CORS(app)  # Enable CORS for all domains
+    # Or for specific origin
+    # CORS(app, resources={r"/auth/*": {"origins": "http://127.0.0.1:5500"}})
     
     # Initialiser les extensions
     db.init_app(app)
