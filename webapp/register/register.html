@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <!-- Design by foolishdeveloper.com -->
-    <title>Login page</title>
+    <title>Register page</title>
  
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="register.css">
 
 </head>
 <body>
@@ -15,8 +15,14 @@
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
-    <form action="http://localhost:5000/auth/login" method="post">
-        <h3>Login</h3>
+    <form action="http://localhost:5000/user" method="post">
+        <h3>Register</h3>
+
+        <label for="first_name">Fisrt Name</label>
+        <input type="text" placeholder="First Name" id="first_name">
+
+        <label for="last_name">Last Name</label>
+        <input type="text" placeholder="Last Name" id="last_name">
 
         <label for="email">Email</label>
         <input type="text" placeholder="Email" id="email">
@@ -26,8 +32,8 @@
         <input type="password" placeholder="Password" id="password" style="padding-right: 40px;">
         <button type="button" id="togglePassword"><i class="fas fa-eye"></i></button>
         </div>
-        <button>Log In</button>
+        <button>Create account</button>
     </form>
-    <script src="login.js"></script>
+    <script src="register.js"></script>
 </body>
 </html>

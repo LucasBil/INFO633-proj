@@ -12,7 +12,7 @@ def create_app(config_class=Config):
 
     CORS(app)  # Enable CORS for all domains
     # Or for specific origin
-    # CORS(app, resources={r"/auth/*": {"origins": "http://127.0.0.1:5500"}})
+    #CORS(app, resources={r"/auth/*": {"origins": "*"}})
     
     # Initialiser les extensions
     db.init_app(app)
