@@ -17,16 +17,14 @@ togglePassword.addEventListener("click", function () {
 const form = document.querySelector('form');
         form.addEventListener('submit', (event) => {
             event.preventDefault(); // Prevent the default form submission
-
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
 
-            fetch('http://localhost:5000/auth/login', {
+            fetch('http://localhost:5000/auth/login/', {
                 method: 'POST',
                 mode: 'cors',
                 headers: {
-                    'Content-Type': 'application/json', // Important for POST requests
-                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ // You need to stringify your body
                         email: email,
