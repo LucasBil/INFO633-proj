@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/../utils/token.php';
 
 abstract class Controller {
     public static function getRequestData(): array {
         $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
         if (stripos($contentType, 'application/json') === 0) {
-            return Request::getJsonRequestData();
+            return Controller::getJsonRequestData();
         } elseif (stripos($contentType, 'application/x-www-form-urlencoded') === 0) {
             return $_POST;
         } elseif (stripos($contentType, 'multipart/form-data') === 0) {
@@ -14,6 +15,28 @@ abstract class Controller {
         }
         $json = file_get_contents('php://input');
         return json_decode($json, true);
+    }
+
+    public static function getToken(): ?string {
+        $headers = getallheaders();
+        if (isset($headers['Authorization'])) {
+            list($type, $token) = explode(' ', $headers['Authorization'], 2);
+            if (strcasecmp($type, 'Bearer') === 0) {
+                return $token;
+            }
+        }
+        return null;
+    }
+
+    public static function userAuthenticated(): bool {
+        $token = self::getToken();
+        if ($token) {
+            $tokenManager = TokenManager::getInstance();
+            if ($tokenManager->validateToken($token)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static function getJsonRequestData(): array {

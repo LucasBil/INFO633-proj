@@ -5,11 +5,17 @@ require_once __DIR__ . '/../utils/controller.php';
 
 class UserController extends Controller {
     public static function getAll() {
+        if (!self::userAuthenticated()) {
+            return self::sendError('Unauthorized', 401);
+        }
         $users = UserService::getAll();
         return self::sendResponse($users);
     }
 
     public static function getById(int $id) {
+        if (!self::userAuthenticated()) {
+            return self::sendError('Unauthorized', 401);
+        }
         $user = UserService::getById($id);
         if ($user) {
             return self::sendResponse($user);
@@ -24,8 +30,9 @@ class UserController extends Controller {
                 'password' => $password,
                 'first_name' => $first_name,
                 'last_name' => $last_name,
-            ] = self::getselfData();
-            $user = new User($email, $password, $first_name, $last_name, [Role::STUDENT]);
+            ] = self::getRequestData();
+            $user = new User($email, null, $first_name, $last_name, [Role::STUDENT]);
+            $user->setPassword($password);
             $user = UserService::create($user);
             return self::sendResponse($user, 201);
         } catch (PDOException $e) {
@@ -36,6 +43,10 @@ class UserController extends Controller {
     }
 
     public static function update(int $id) {
+        $tokenUserId = TokenManager::getInstance()->getTokenData(self::getToken() ?? '')['data']['id'];
+        if ($tokenUserId != $id) {
+            return self::sendError('Unauthorized', 401);
+        }
         try {
             $user = UserService::getById($id);
             if (!$user) {
@@ -60,6 +71,10 @@ class UserController extends Controller {
     }
 
     public static function delete(int $id) {
+        $tokenUserId = TokenManager::getInstance()->getTokenData(self::getToken() ?? '')['data']['id'];
+        if ($tokenUserId != $id) {
+            return self::sendError('Unauthorized', 401);
+        }
         try {
             $user = UserService::getById($id);
             if (!$user) {

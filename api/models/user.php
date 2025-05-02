@@ -10,10 +10,10 @@ class User extends Entity implements JsonSerializable {
     private ?string $last_name;
     private ?array $roles;
 
-    public function __construct(string $email, string $password, string $first_name, string $last_name, array $roles, $id = null) {
+    public function __construct(string $email, ?string $password, string $first_name, string $last_name, array $roles, $id = null) {
         $this->id = $id;
         $this->email = $email;
-        $this->password = password_hash($password, PASSWORD_BCRYPT);
+        $this->password = $password;
         $this->first_name = $first_name;
         $this->last_name = $last_name;
         $this->roles = $roles;
@@ -46,7 +46,7 @@ class User extends Entity implements JsonSerializable {
 
     public function setPassword(?string $password): void
     {
-        $this->password = password_hash($password, PASSWORD_BCRYPT);
+        $this->password = hash('sha256', $password);
     }
 
     public function getFirstName(): ?string
