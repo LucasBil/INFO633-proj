@@ -18,4 +18,5 @@ foreach ($routes[$method] as $pattern => $handler) {
 }
 
 http_response_code(404);
+header('Content-Type: application/json');
 echo json_encode(["message" => "404 - Not Found"]);

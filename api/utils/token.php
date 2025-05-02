@@ -33,6 +33,6 @@ class TokenManager {
 
     public function getTokenData(string $token): array {
         list($payload, $signature) = explode('.', $token);
-        return json_decode(base64_decode($payload), true);
+        return json_decode(base64_decode($payload), true)['data'] ?? [];
     }
 }

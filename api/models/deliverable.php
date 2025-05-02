@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../utils/entity.php';
+require_once __DIR__ . '/project.php';
 
 class Deliverable extends Entity implements JsonSerializable {
     private ?int $id;
@@ -84,7 +85,7 @@ class Deliverable extends Entity implements JsonSerializable {
             'date_creation' => [
                 'type' => 'DATETIME',
                 'not_null' => true,
-                'default' => 'CURRENT_TIMESTAMP',
+                'default' => 'NOW()',
             ],
             'date_closure' => [
                 'type' => 'DATETIME',
@@ -93,6 +94,10 @@ class Deliverable extends Entity implements JsonSerializable {
             'id_project' => [
                 'type' => 'INT',
                 'not_null' => true,
+                'foreign_key' => [
+                    'table' => Project::getTableName(),
+                    'column' => 'id',
+                ],
             ],
         ];
     }

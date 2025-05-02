@@ -43,7 +43,7 @@ class UserController extends Controller {
     }
 
     public static function update(int $id) {
-        $tokenUserId = TokenManager::getInstance()->getTokenData(self::getToken() ?? '')['data']['id'];
+        $tokenUserId = TokenManager::getInstance()->getTokenData(self::getToken() ?? '')['id'];
         if ($tokenUserId != $id) {
             return self::sendError('Unauthorized', 401);
         }
@@ -71,7 +71,7 @@ class UserController extends Controller {
     }
 
     public static function delete(int $id) {
-        $tokenUserId = TokenManager::getInstance()->getTokenData(self::getToken() ?? '')['data']['id'];
+        $tokenUserId = TokenManager::getInstance()->getTokenData(self::getToken() ?? '')['id'];
         if ($tokenUserId != $id) {
             return self::sendError('Unauthorized', 401);
         }

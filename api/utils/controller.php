@@ -55,4 +55,20 @@ abstract class Controller {
         header('Content-Type: application/json');
         echo json_encode(['error' => $message]);
     }
+
+    public static function roleGranted(array $roles): bool {
+        $token = self::getToken();
+        if ($token) {
+            $tokenManager = TokenManager::getInstance();
+            if ($tokenManager->validateToken($token)) {
+                $userData = $tokenManager->getTokenData($token);
+                foreach ($roles as $role) {
+                    if (in_array($role, $userData['roles'])) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }

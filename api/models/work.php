@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../utils/entity.php';
+require_once __DIR__ . '/user.php';
+require_once __DIR__ . '/project.php';
 
 class Work extends Entity implements JsonSerializable {
     private ?int $id_user;
@@ -32,11 +34,19 @@ class Work extends Entity implements JsonSerializable {
                 'type' => 'INT',
                 'primary_key' => true,
                 'not_null' => true,
+                'foreign_key' => [
+                    'table' => User::getTableName(),
+                    'column' => 'id'
+                ]
             ],
             'id_project' => [
                 'type' => 'INT',
                 'primary_key' => true,
                 'not_null' => true,
+                'foreign_key' => [
+                    'table' => Project::getTableName(),
+                    'column' => 'id'
+                ]
             ]
         ];
     }

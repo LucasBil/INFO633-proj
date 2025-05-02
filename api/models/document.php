@@ -1,5 +1,7 @@
 <?php
 require_once __DIR__ . '/../utils/entity.php';
+require_once __DIR__ . '/user.php';
+require_once __DIR__ . '/deliverable.php';
 
 class Document extends Entity implements JsonSerializable {
     private ?int $id;
@@ -90,7 +92,7 @@ class Document extends Entity implements JsonSerializable {
             'date_deposition' => [
                 'type' => 'DATETIME',
                 'not_null' => true,
-                'default' => 'CURRENT_TIMESTAMP',
+                'default' => 'NOW()',
             ],
             'data' => [
                 'type' => 'VARCHAR(150)',
@@ -103,10 +105,18 @@ class Document extends Entity implements JsonSerializable {
             'id_user' => [
                 'type' => 'INT',
                 'not_null' => true,
+                'foreign_key' => [
+                    'table' => User::getTableName(),
+                    'column' => 'id',
+                ],
             ],
             'id_deliverable' => [
                 'type' => 'INT',
                 'not_null' => true,
+                'foreign_key' => [
+                    'table' => Deliverable::getTableName(),
+                    'column' => 'id',
+                ],
             ],
         ];
     }

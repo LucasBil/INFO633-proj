@@ -15,6 +15,7 @@ abstract class Entity
     
         $query = "CREATE TABLE IF NOT EXISTS `$tableName` (";
         $primaryKeys = [];
+        $foreignKeys = [];
         $uniqueColumns = [];
 
         foreach (static::getColumns() as $columnName => $options) {
@@ -25,9 +26,13 @@ abstract class Entity
                 $query .= " AUTO_INCREMENT";
             }
             if (isset($options['default'])) {
-                $default = is_array($options['default']) 
-                    ? "'" . json_encode($options['default']) . "'"
-                    : "'" . $options['default'] . "'";
+                if ($options['type'] != 'DATETIME') {
+                    $default = is_array($options['default']) 
+                        ? "'" . json_encode($options['default']) . "'"
+                        : "'" . $options['default'] . "'";
+                } else {
+                    $default = $options['default'];
+                }
                 $query .= " DEFAULT " . $default;
             }
             if (isset($options['not_null']) && $options['not_null']) {
@@ -38,6 +43,21 @@ abstract class Entity
             }
             if (isset($options['unique']) && $options['unique']) {
                 $uniqueColumns[] = $columnName;
+            }
+            if (isset($options['foreign_key'])) {
+                $foreignKeys[] = [
+                    'table' => $options['foreign_key']['table'],
+                    'column' => $options['foreign_key']['column'],
+                    'name' => "fk_{$tableName}_{$columnName}"
+                ];
+                $query .= " REFERENCES `" . $options['foreign_key']['table'] . "`(`" . $options['foreign_key']['column'] . "`)";
+
+                if (isset($options['on_delete'])) {
+                    $query .= " ON DELETE " . strtoupper($options['on_delete']);
+                }
+                if (isset($options['on_update'])) {
+                    $query .= " ON UPDATE " . strtoupper($options['on_update']);
+                }
             }
             $query .= ", ";
         }
@@ -52,7 +72,13 @@ abstract class Entity
         }
         $query = rtrim($query, ', ');
         $query .= ");";
-        return DBAManager::getInstance()->exec($query) !== false;
+        try {
+            return DBAManager::getInstance()->exec($query);
+        } catch (PDOException $e) {
+            var_dump($query);
+            error_log("Erreur lors de la création de la table $tableName: " . $e->getMessage());
+            return false;
+        }
     }
 
     protected static function camelToSnakeCase(string $input): string

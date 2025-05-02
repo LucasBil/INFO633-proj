@@ -1,6 +1,7 @@
 <?php
-require_once __DIR__ . '/enum/project_status.php';
+require_once __DIR__ . '/enum/projectStatus.php';
 require_once __DIR__ . '/../utils/entity.php';
+require_once __DIR__ . '/user.php';
 
 class Project extends Entity implements JsonSerializable {
     private ?int $id;
@@ -11,7 +12,9 @@ class Project extends Entity implements JsonSerializable {
     private ?string $duration;
     private ?int $id_creator;
 
-    public function __construct(string $name, string $description, string $status, int $year, string $duration, int $id_creator, ?int $id = null) {
+    private ?User $creator;
+
+    public function __construct(string $name, string $description, string $status, int $year, string $duration, ?int $id_creator=null, ?int $id = null) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
@@ -77,6 +80,14 @@ class Project extends Entity implements JsonSerializable {
         $this->id_creator = $id_creator;
     }
 
+    public function getCreator(): ?User {
+        return $this->creator;
+    }
+    public function setCreator(?User $creator): void {
+        $this->id_creator = $creator->getId();
+        $this->creator = $creator;
+    }
+
     protected static function getColumns(): array {
         return [
             'id' => [
@@ -106,7 +117,11 @@ class Project extends Entity implements JsonSerializable {
             ],
             'id_creator' => [
                 'type' => 'INT',
-                'not_null' => true
+                'not_null' => true,
+                'foreign_key' => [
+                    'table' => User::getTableName(),
+                    'column' => 'id'
+                ]
             ],
         ];
     }
@@ -119,9 +134,7 @@ class Project extends Entity implements JsonSerializable {
             'status' => $this->status,
             'year' => $this->year,
             'duration' => $this->duration,
-            'id_creator' => $this->id_creator,
+            'creator' => $this->creator ?? null
         ];
     }
-
-    // Getters and setters omitted for brevity but follow same pattern as User
 }
