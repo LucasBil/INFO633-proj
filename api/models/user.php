@@ -10,7 +10,7 @@ class User extends Entity implements JsonSerializable {
     private ?string $last_name;
     private ?array $roles;
 
-    public function __construct(string $email, string $password, string $first_name, string $last_name, array $roles, ?int $id = null) {
+    public function __construct(string $email, ?string $password, string $first_name, string $last_name, array $roles, ?int $id = null) {
         $this->id = $id;
         $this->email = $email;
         $this->password = $password;
