@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Profile</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <link rel="stylesheet" href="profilePage.css">
+</head>
+<body>
+
+  <h1>My account</h1>
+
+  <form id="update-form">
+    <h2>Mettre à jour vos infos</h2>
+    <label>
+      Prénom:<br>
+      <input type="text" id="first_name">
+    </label><br><br>
+    <label>
+      Nom de famille:<br>
+      <input type="text" id="last_name">
+    </label><br><br>
+    <label>
+        Email:<br>
+        <input type="email" id="email" required>
+      </label><br><br>
+    <label>Password:<br>
+        <div style="position: relative;">
+        <input type="password" placeholder="Password" id="password" style="padding-right: 40px;" required>
+        <button type="button" id="togglePassword"><i class="fas fa-eye"></i></button>
+        </div>
+    </label><br><br>
+    <button type="submit">Sauvegarder</button>
+  </form>
+
+  <hr>
+
+  <h2>Supprimer le compte</h2>
+  <button id="delete-btn" style="color: red;">Supprimer mon compte</button>
+  <script src="profilePage.js"></script>
+
+</body>
+</html>
