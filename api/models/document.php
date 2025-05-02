@@ -4,16 +4,16 @@ require_once __DIR__ . '/../utils/entity.php';
 class Document extends Entity implements JsonSerializable {
     private ?int $id;
     private ?string $name;
-    private ?string $date_deposition;
-    private ?string $data;
+    private ?DateTime $date_deposition;
+    private ?DateTime $data;
     private ?string $file_type;
     private ?int $id_user;
     private ?int $id_deliverable;
 
-    public function __construct(string $name, string $date_deposition, string $data, string $file_type, int $id_user, int $id_deliverable, ?int $id = null) {
+    public function __construct(string $name, DateTime $date_deposition, string $data, string $file_type, int $id_user, int $id_deliverable, ?int $id = null) {
         $this->id = $id;
         $this->name = $name;
-        $this->date_deposition = $date_deposition ?? date('Y-m-d H:i:s');
+        $this->date_deposition = $date_deposition;
         $this->data = $data;
         $this->file_type = $file_type;
         $this->id_user = $id_user;
@@ -36,11 +36,11 @@ class Document extends Entity implements JsonSerializable {
         $this->name = $name;
     }
 
-    public function getDateDeposition(): ?string {
+    public function getDateDeposition(): ?DateTime {
         return $this->date_deposition;
     }
 
-    public function setDateDeposition(?string $date_deposition): void {
+    public function setDateDeposition(?DateTime $date_deposition): void {
         $this->date_deposition = $date_deposition;
     }
 
@@ -115,7 +115,7 @@ class Document extends Entity implements JsonSerializable {
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'date_deposition' => $this->date_deposition,
+            'date_deposition' => $this->date_deposition?->format('Y-m-d H:i:s'),
             'data' => $this->data,
             'file_type' => $this->file_type,
             'id_user' => $this->id_user,

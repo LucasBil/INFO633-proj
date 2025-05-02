@@ -5,15 +5,15 @@ class Deliverable extends Entity implements JsonSerializable {
     private ?int $id;
     private ?string $name;
     private ?string $description;
-    private ?string $date_creation;
-    private ?string $date_closure;
+    private ?DateTime $date_creation;
+    private ?DateTime $date_closure;
     private ?int $id_project;
 
-    public function __construct(string $name, string $description, string $date_creation, string $date_closure, int $id_project, ?int $id = null) {
+    public function __construct(string $name, string $description, DateTime $date_creation, DateTime $date_closure, int $id_project, ?int $id = null) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
-        $this->date_creation = $date_creation ?? date('Y-m-d H:i:s');
+        $this->date_creation = $date_creation;
         $this->date_closure = $date_closure;
         $this->id_project = $id_project;
     }
@@ -42,19 +42,19 @@ class Deliverable extends Entity implements JsonSerializable {
         $this->description = $description;
     }
 
-    public function getDateCreation(): ?string {
+    public function getDateCreation(): ?DateTime {
         return $this->date_creation;
     }
 
-    public function setDateCreation(?string $date_creation): void {
+    public function setDateCreation(?DateTime $date_creation): void {
         $this->date_creation = $date_creation;
     }
 
-    public function getDateClosure(): ?string {
+    public function getDateClosure(): ?DateTime {
         return $this->date_closure;
     }
 
-    public function setDateClosure(?string $date_closure): void {
+    public function setDateClosure(?DateTime $date_closure): void {
         $this->date_closure = $date_closure;
     }
 
@@ -102,8 +102,8 @@ class Deliverable extends Entity implements JsonSerializable {
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'date_creation' => $this->date_creation,
-            'date_closure' => $this->date_closure,
+            'date_creation' => $this->date_creation?->format('Y-m-d H:i:s'),
+            'date_closure' => $this->date_closure?->format('Y-m-d H:i:s'),
             'id_project' => $this->id_project,
         ];
     }
