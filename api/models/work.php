@@ -1,0 +1,50 @@
+<?php
+require_once __DIR__ . '/../utils/entity.php';
+
+class Work extends Entity implements JsonSerializable {
+    private ?int $id_user;
+    private ?int $id_project;
+
+    public function __construct(int $id_user, int $id_project) {
+        $this->id_user = $id_user;
+        $this->id_project = $id_project;
+    }
+
+    public function getIdUser(): ?int {
+        return $this->id_user;
+    }
+
+    public function setIdUser(?int $id_user): void {
+        $this->id_user = $id_user;
+    }
+
+    public function getIdProject(): ?int {
+        return $this->id_project;
+    }
+
+    public function setIdProject(?int $id_project): void {
+        $this->id_project = $id_project;
+    }
+
+    protected static function getColumns(): array {
+        return [
+            'id_user' => [
+                'type' => 'INT',
+                'primary_key' => true,
+                'not_null' => true,
+            ],
+            'id_project' => [
+                'type' => 'INT',
+                'primary_key' => true,
+                'not_null' => true,
+            ]
+        ];
+    }
+
+    public function jsonSerialize(): array {
+        return [
+            'id_user' => $this->id_user,
+            'id_project' => $this->id_project,
+        ];
+    }
+}
