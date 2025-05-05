@@ -7,6 +7,9 @@ class Work extends Entity implements JsonSerializable {
     private ?int $id_user;
     private ?int $id_project;
 
+    private ?User $user = null;
+    private ?Project $project = null;
+
     public function __construct(int $id_user, int $id_project) {
         $this->id_user = $id_user;
         $this->id_project = $id_project;
@@ -26,6 +29,22 @@ class Work extends Entity implements JsonSerializable {
 
     public function setIdProject(?int $id_project): void {
         $this->id_project = $id_project;
+    }
+
+    public function getProject(): ?Project {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): void {
+        $this->project = $project;
+    }
+
+    public function getUser(): ?User {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): void {
+        $this->user = $user;
     }
 
     protected static function getColumns(): array {
@@ -53,8 +72,8 @@ class Work extends Entity implements JsonSerializable {
 
     public function jsonSerialize(): array {
         return [
-            'id_user' => $this->id_user,
-            'id_project' => $this->id_project,
+            'user' => $this->user,
+            'project' => $this->project,
         ];
     }
 }

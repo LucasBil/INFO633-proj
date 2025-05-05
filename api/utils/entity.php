@@ -75,10 +75,22 @@ abstract class Entity
         try {
             return DBAManager::getInstance()->exec($query);
         } catch (PDOException $e) {
-            var_dump($query);
+            //var_dump($query);
             error_log("Erreur lors de la création de la table $tableName: " . $e->getMessage());
+            //echo("Erreur lors de la création de la table $tableName: " . $e->getMessage());
             return false;
         }
+    }
+
+    public static function getDependencies(): array
+    {
+        $dependencies = [];
+        foreach (static::getColumns() as $columnName => $options) {
+            if (isset($options['foreign_key'])) {
+                $dependencies[] = $options['foreign_key']['table'];
+            }
+        }
+        return array_unique($dependencies);
     }
 
     protected static function camelToSnakeCase(string $input): string

@@ -10,6 +10,8 @@ class Deliverable extends Entity implements JsonSerializable {
     private ?DateTime $date_closure;
     private ?int $id_project;
 
+    private ?Project $project;
+
     public function __construct(string $name, string $description, DateTime $date_creation, DateTime $date_closure, int $id_project, ?int $id = null) {
         $this->id = $id;
         $this->name = $name;
@@ -67,6 +69,14 @@ class Deliverable extends Entity implements JsonSerializable {
         $this->id_project = $id_project;
     }
 
+    public function getProject(): ?Project {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): void {
+        $this->project = $project;
+    }
+
     protected static function getColumns(): array {
         return [
             'id' => [
@@ -109,7 +119,7 @@ class Deliverable extends Entity implements JsonSerializable {
             'description' => $this->description,
             'date_creation' => $this->date_creation?->format('Y-m-d H:i:s'),
             'date_closure' => $this->date_closure?->format('Y-m-d H:i:s'),
-            'id_project' => $this->id_project,
+            'project' => $this->project,
         ];
     }
 }

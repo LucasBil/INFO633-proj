@@ -3,11 +3,12 @@
 require_once __DIR__ . '/../utils/service.php';
 require_once __DIR__ . '/../models/project.php';
 require_once __DIR__ . '/../models/user.php';
+require_once __DIR__ . '/user_service.php';
 
 class ProjectService extends Service
 {
-    private static function projectModel($id, $name, $description, $status, $year, $duration, $id_creator, $email, $password, $first_name, $last_name, $roles): Project {
-        $user = new User($email, $password, $first_name, $last_name, json_decode($roles), $id_creator);
+    private static function projectModel($id, $name, $description, $status, $year, $duration, $id_creator): Project {
+        $user = UserService::getById($id_creator);
         $project = new Project($name, $description, $status, $year, $duration, $id_creator, $id);
         $project->setCreator($user);
         return $project;
@@ -17,12 +18,11 @@ class ProjectService extends Service
     {
         $table = Project::getTableName();
         $db = DBAManager::getInstance();
-        $query = "SELECT p.id, p.name, p.description, p.status, p.year, p.duration, u.id AS 'id_creator', u.email, u.password, u.first_name, u.last_name, u.roles FROM $table p
-                  JOIN user u on u.id = p.id_creator;";
+        $query = "SELECT * FROM $table;";
         $stmt = $db->prepare($query);
         $stmt->execute();
-        $projects = $stmt->fetchAll(PDO::FETCH_FUNC, function($id, $name, $description, $status, $year, $duration, $id_creator, $email, $password, $first_name, $last_name, $roles) {
-            return self::projectModel($id, $name, $description, $status, $year, $duration, $id_creator, $email, $password, $first_name, $last_name, $roles);
+        $projects = $stmt->fetchAll(PDO::FETCH_FUNC, function($id, $name, $description, $status, $year, $duration, $id_creator) {
+            return self::projectModel($id, $name, $description, $status, $year, $duration, $id_creator);
         });
         return $projects;
     }
@@ -31,18 +31,14 @@ class ProjectService extends Service
     {
         $table = Project::getTableName();
         $db = DBAManager::getInstance();
-        $query = "SELECT p.id, p.name, p.description, p.status, p.year, p.duration, u.id AS 'id_creator', u.email, u.password, u.first_name, u.last_name, u.roles FROM $table p
-                  JOIN user u on u.id = p.id_creator WHERE p.id = :id;";
+        $query = "SELECT * FROM $table WHERE id = :id;";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':id', $id);
         $stmt->execute();
-        $projects = $stmt->fetchAll(PDO::FETCH_FUNC, function($id, $name, $description, $status, $year, $duration, $id_creator, $email, $password, $first_name, $last_name, $roles) {
-            return self::projectModel($id, $name, $description, $status, $year, $duration, $id_creator, $email, $password, $first_name, $last_name, $roles);
+        $projects = $stmt->fetchAll(PDO::FETCH_FUNC, function($id, $name, $description, $status, $year, $duration, $id_creator) {
+            return self::projectModel($id, $name, $description, $status, $year, $duration, $id_creator);
         });
-        if (empty($projects)) {
-            return null;
-        }
-        return $projects[0];
+        return $projects[0] ?? null;
     }
 
     public static function create(Project $project): Project

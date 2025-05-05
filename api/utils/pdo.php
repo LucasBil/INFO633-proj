@@ -26,8 +26,58 @@ class DBAManager {
                 $_ENV['DB_PASSWORD'] ?? 'root',
                 $_ENV['DB_DATABASE'] ?? 'info633'
             );
+            self::generateDatabase();
         }
         return self::$instance;
+    }
+
+    private static function generateDatabase() {
+        # Get all class in models folder
+        $models = glob(__DIR__ . '/../models/*.php');
+        
+        # Load all classes and build dependency graph
+        $classes = [];
+        $dependencyGraph = [];
+        
+        foreach ($models as $model) {
+            require_once $model;
+            $className = basename($model, '.php');
+            
+            if (method_exists($className, 'getDependencies') && 
+                method_exists($className, 'createTable')) {
+                $classes[] = $className;
+                $dependencyGraph[$className] = $className::getDependencies();
+            }
+        }
+        
+        # Topological sort to handle dependencies
+        $sortedClasses = [];
+        $visited = [];
+        
+        $visit = function ($className) use (&$visit, &$sortedClasses, &$visited, $dependencyGraph) {
+            if (isset($visited[$className])) {
+                return;
+            }
+            $visited[$className] = true;
+            
+            foreach ($dependencyGraph[$className] as $dependency) {
+                if (class_exists($dependency) && 
+                    method_exists($dependency, 'createTable')) {
+                    $visit($dependency);
+                }
+            }
+            
+            $sortedClasses[] = $className;
+        };
+        
+        foreach ($classes as $className) {
+            $visit($className);
+        }
+        
+        # Create tables in correct order
+        foreach ($sortedClasses as $className) {
+            $className::createTable();
+        }
     }
 
     public function query(string $query) {

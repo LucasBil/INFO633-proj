@@ -7,7 +7,7 @@ class Document extends Entity implements JsonSerializable {
     private ?int $id;
     private ?string $name;
     private ?DateTime $date_deposition;
-    private ?DateTime $data;
+    private ?string $data;
     private ?string $file_type;
     private ?int $id_user;
     private ?int $id_deliverable;
