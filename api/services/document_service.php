@@ -8,7 +8,7 @@ require_once __DIR__ . '/asset_service.php';
 require_once __DIR__ . '/deliverable_service.php';
 
 class DocumentService extends Service {
-    private static string $UPLOAD_PATH = __DIR__ . '/../upload/';
+    private static string $UPLOAD_PATH = __DIR__ . '/../uploads/';
     public static function documentModel($id, $name, $date_deposition, $data, $file_type, $id_user, $id_deliverable, $id_asset) {
         $date_deposition = DateTime::createFromFormat('Y-m-d H:i:s', $date_deposition);
         $document = new Document($name, $date_deposition, $data, $file_type, $id_user, $id_deliverable, $id_asset, $id);
