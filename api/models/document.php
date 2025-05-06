@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../utils/entity.php';
 require_once __DIR__ . '/user.php';
 require_once __DIR__ . '/deliverable.php';
+require_once __DIR__ . '/asset.php';
 
 class Document extends Entity implements JsonSerializable {
     private ?int $id;
@@ -11,8 +12,13 @@ class Document extends Entity implements JsonSerializable {
     private ?string $file_type;
     private ?int $id_user;
     private ?int $id_deliverable;
+    private ?int $id_asset;
 
-    public function __construct(string $name, DateTime $date_deposition, string $data, string $file_type, int $id_user, int $id_deliverable, ?int $id = null) {
+    private ?User $user = null;
+    private ?Deliverable $deliverable = null;
+    private ?Asset $asset = null;
+
+    public function __construct(?string $name, DateTime $date_deposition, ?string $data, ?string $file_type, int $id_user, ?int $id_deliverable, ?int $id_asset, ?int $id = null) {
         $this->id = $id;
         $this->name = $name;
         $this->date_deposition = $date_deposition;
@@ -20,6 +26,7 @@ class Document extends Entity implements JsonSerializable {
         $this->file_type = $file_type;
         $this->id_user = $id_user;
         $this->id_deliverable = $id_deliverable;
+        $this->id_asset = $id_asset;
     }
 
     public function getId(): ?int {
@@ -78,6 +85,46 @@ class Document extends Entity implements JsonSerializable {
         $this->id_deliverable = $id_deliverable;
     }
 
+    public function getIdAsset(): ?int
+    {
+        return $this->id_asset;
+    }
+
+    public function setIdAsset(?int $id_asset): void
+    {
+        $this->id_asset = $id_asset;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): void
+    {
+        $this->user = $user;
+    }
+
+    public function getDeliverable(): ?Deliverable
+    {
+        return $this->deliverable;
+    }
+
+    public function setDeliverable(?Deliverable $deliverable): void
+    {
+        $this->deliverable = $deliverable;
+    }
+
+    public function getAsset(): ?Asset
+    {
+        return $this->asset;
+    }
+
+    public function setAsset(?Asset $asset): void
+    {
+        $this->asset = $asset;
+    }
+
     protected static function getColumns(): array {
         return [
             'id' => [
@@ -112,9 +159,17 @@ class Document extends Entity implements JsonSerializable {
             ],
             'id_deliverable' => [
                 'type' => 'INT',
-                'not_null' => true,
+                'not_null' => false,
                 'foreign_key' => [
                     'table' => Deliverable::getTableName(),
+                    'column' => 'id',
+                ],
+            ],
+            'id_asset' => [
+                'type' => 'INT',
+                'not_null' => false,
+                'foreign_key' => [
+                    'table' => Asset::getTableName(),
                     'column' => 'id',
                 ],
             ],
@@ -128,8 +183,9 @@ class Document extends Entity implements JsonSerializable {
             'date_deposition' => $this->date_deposition?->format('Y-m-d H:i:s'),
             'data' => $this->data,
             'file_type' => $this->file_type,
-            'id_user' => $this->id_user,
-            'id_deliverable' => $this->id_deliverable,
+            'user' => $this->user,
+            'deliverable' => $this->deliverable,
+            'asset' => $this->asset,
         ];
     }
 }

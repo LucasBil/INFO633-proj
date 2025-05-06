@@ -9,7 +9,7 @@ abstract class Controller {
         } elseif (stripos($contentType, 'application/x-www-form-urlencoded') === 0) {
             return $_POST;
         } elseif (stripos($contentType, 'multipart/form-data') === 0) {
-            return $_POST; // Handle file uploads separately if needed
+            return array_merge($_POST, $_FILES); // Handle file uploads separately if needed
         } else {
             return $_REQUEST; // Fallback to default request data
         }

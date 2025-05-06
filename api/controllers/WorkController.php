@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../services/work_service.php';
 require_once __DIR__ . '/../utils/controller.php';
+require_once __DIR__ . '/../models/enum/role.php';
 
 class WorkController extends Controller
 {
@@ -34,6 +35,9 @@ class WorkController extends Controller
             return self::sendError('Unauthorized', 401);
         }
         $work = WorkService::getByIds($user_id, $project_id);
+        if (!$work) {
+            self::sendError('Work not found', 404);
+        }
         return self::sendResponse($work);
     }
 

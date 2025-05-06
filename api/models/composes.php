@@ -20,6 +20,66 @@ class Composes extends Entity implements JsonSerializable {
         $this->comment = $comment;
     }
 
+    public function getIdProject(): ?int
+    {
+        return $this->id_project;
+    }
+
+    public function setIdProject(?int $id_project): void
+    {
+        $this->id_project = $id_project;
+    }
+
+    public function getIdAsset(): ?int
+    {
+        return $this->id_asset;
+    }
+
+    public function setIdAsset(?int $id_asset): void
+    {
+        $this->id_asset = $id_asset;
+    }
+
+    public function getCondition(): ?Condition
+    {
+        return $this->condition;
+    }
+
+    public function setCondition(?Condition $condition): void
+    {
+        $this->condition = $condition;
+    }
+
+    public function getComment(): ?string
+    {
+        return $this->comment;
+    }
+
+    public function setComment(?string $comment): void
+    {
+        $this->comment = $comment;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): void
+    {
+        $this->project = $project;
+    }
+
+    public function getAsset(): ?Asset
+    {
+        return $this->asset;
+    }
+
+    public function setAsset(?Asset $asset): void
+    {
+        $this->asset = $asset;
+    }
+
     protected static function getColumns(): array {
         return [
             'id_project' => [

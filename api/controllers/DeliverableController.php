@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../services/deliverable_service.php';
 require_once __DIR__ . '/../utils/controller.php';
+require_once __DIR__ . '/../models/enum/role.php';
 
 class DeliverableController extends Controller {
     public static function getAll() {
@@ -23,7 +24,7 @@ class DeliverableController extends Controller {
     }
 
     public static function create() {
-        if (!self::userAuthenticated()) {
+        if (!self::userAuthenticated() || !self::roleGranted([ROLE::ADMIN->value, ROLE::TEACHER->value])) {
             return self::sendError('Unauthorized', 401);
         }
         [
@@ -35,11 +36,11 @@ class DeliverableController extends Controller {
         ] = self::getRequestData();
         $deliverable = new Deliverable($name, $description, new DateTime($date_creation), new DateTime($date_closure), $id_project);
         $deliverable = DeliverableService::create($deliverable);
-        return self::sendResponse($createdDeliverable, 201);
+        return self::sendResponse($deliverable, 201);
     }
 
     public static function update($id) {
-        if (!self::userAuthenticated()) {
+        if (!self::userAuthenticated() || !self::roleGranted([ROLE::ADMIN->value, ROLE::TEACHER->value])) {
             return self::sendError('Unauthorized', 401);
         }
         $deliverable = DeliverableService::getById($id);
@@ -63,7 +64,7 @@ class DeliverableController extends Controller {
     }
 
     public static function delete($id) {
-        if (!self::userAuthenticated()) {
+        if (!self::userAuthenticated() || !self::roleGranted([ROLE::ADMIN->value, ROLE::TEACHER->value])) {
             return self::sendError('Unauthorized', 401);
         }
         $deliverable = DeliverableService::getById($id);

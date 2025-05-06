@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../models/user.php';
 require_once __DIR__ . '/../services/user_service.php';
 require_once __DIR__ . '/../utils/controller.php';
+require_once __DIR__ . '/../models/enum/role.php';
 
 class UserController extends Controller {
     public static function getAll() {

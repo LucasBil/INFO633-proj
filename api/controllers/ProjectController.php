@@ -34,7 +34,6 @@ class ProjectController extends Controller
         if (!self::userAuthenticated() || !self::roleGranted([ROLE::ADMIN->value, ROLE::TEACHER->value])) {
             return self::sendError('Unauthorized', 401);
         }
-
         [
             'name' => $name,
             'description' => $description,
