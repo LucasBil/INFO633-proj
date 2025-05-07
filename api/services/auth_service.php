@@ -6,7 +6,7 @@ require_once __DIR__ . '/../utils/service.php';
 require_once __DIR__ . '/../utils/token.php';
 
 class AuthService extends Service {
-    public static function login(string $email, string $password): ?string {
+    public static function login(string $email, string $password): array {
         $table = User::getTableName();
         $db = DBAManager::getInstance();
 
@@ -18,7 +18,7 @@ class AuthService extends Service {
             return new User($email, $password, $first_name, $last_name, json_decode($roles), $id);
         });
         if (empty($users) || $users[0]->getPassword() !==  hash('sha256', $password)) {
-            return null;
+            return [];
         }
 
         $token = TokenManager::getInstance()->generateToken($email, [
@@ -26,6 +26,6 @@ class AuthService extends Service {
             'email' => $users[0]->getEmail(),
             'roles' => $users[0]->getRoles(),
         ]);
-        return $token;
+        return ['token' => $token, 'user' => $users[0]];
     }
 }

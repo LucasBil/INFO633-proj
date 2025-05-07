@@ -16,6 +16,19 @@ services:
     environment:
       PMA_HOST: mariadb
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  # Service Webapp
+  webapp:
+    build:
+      context: .
+      dockerfile: ./php/Dockerfile
+    volumes:
+      - ../webapp:/var/www/html
+      - ./php/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+    ports:
+      - "${WEBAPP_PORT}:80"
+    depends_on:
+      - mariadb
   # Service MariaDB
   mariadb :
     image: mariadb:10.11

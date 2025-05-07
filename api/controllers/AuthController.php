@@ -10,11 +10,11 @@ class AuthController extends Controller {
                 'email' => $email,
                 'password' => $password,
             ] = self::getRequestData();
-            $token = AuthService::login($email, $password);
-            if ($token === null) {
+            $auth = AuthService::login($email, $password);
+            if (empty($auth)) {
                 return self::sendError('Invalid email or password', 401);
             }
-            return self::sendResponse(['token' => $token]);
+            return self::sendResponse($auth);
         } catch (PDOException $e) {
             return self::sendError('Failed to login', 500);
         } catch (Exception $e) {
