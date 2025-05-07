@@ -30,11 +30,29 @@ Au travers de cette application et selon la conception choisie, il sera intéres
 # Structure
 ```
 ├───api
+│   ├───controllers
+│   ├───models
+│   │   └───enum
+│   ├───services
+│   ├───uploads
+│   └───utils
+├───db
+│   ├───info633
+│   ├───mysql
+│   ├───performance_schema
+│   └───sys
+├───docker
+│   └───php
 └───webapp
 ```
 # Techno & Commande
 ```
-> ajouter les commandes 
+- Docker
+- PHP / JS / HMTL / CSS
+```
+```
+> cd ./docker
+> docker compose up
 ```
 
 # Contributeur

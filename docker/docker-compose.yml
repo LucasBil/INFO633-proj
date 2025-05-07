@@ -1,0 +1,42 @@
+name: info633
+services:
+  # Service PHP
+  php:
+    build:
+      context: .
+      dockerfile: ./php/Dockerfile
+    volumes:
+      - ../api:/var/www/html
+      - ./php/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+    ports:
+      - "${PHP_PORT}:80"
+    depends_on:
+      - mariadb
+    environment:
+      PMA_HOST: mariadb
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+  # Service MariaDB
+  mariadb :
+    image: mariadb:10.11
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${MARIADB_PORT}:3306"
+    volumes:
+      - ../db:/var/lib/mysql
+  # Service PHPmyadmin
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    depends_on:
+      - mariadb
+    ports:
+      - "${PHPMYADMIN}:80"
+    environment:
+      PMA_HOST: mariadb
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
