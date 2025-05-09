@@ -5,6 +5,7 @@ require_once __DIR__ . '/../utils/service.php';
 require_once __DIR__ . '/../models/composes.php';
 require_once __DIR__ . '/../models/asset.php';
 require_once __DIR__ . '/../models/project.php';
+require_once __DIR__ . '/../models/enum/condition.php';
 require_once __DIR__ . '/asset_service.php';
 require_once __DIR__ . '/project_service.php';
 
@@ -13,6 +14,7 @@ class ComposesService extends Service {
     private static function composesModel($id_project, $id_asset, $condition, $comment) : Composes {
         $project = ProjectService::getById($id_project);
         $asset = AssetService::getById($id_asset);
+        $condition = Condition::from($condition);
         $compose = new Composes($id_project, $id_asset, $condition, $comment);
         $compose->setProject($project);
         $compose->setAsset($asset);

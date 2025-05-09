@@ -8,6 +8,13 @@ class API {
         };
     }
 
+    refresh() {
+        this.defaultHeaders = {
+            'Content-Type': 'application/json',
+            'Authorization' : `Bearer ${cookieManager.getCookie('token')}`,
+        };
+    }
+
     async request(method, url, data = null, config = {}) {
         const headers = { ...this.defaultHeaders, ...config.headers };
         const requestOptions = {
@@ -17,7 +24,12 @@ class API {
         };
 
         if (data) {
-            requestOptions.body = JSON.stringify(data);
+            if (data instanceof FormData) {
+                requestOptions.body = data;
+                delete requestOptions.headers['Content-Type'];
+            } else {
+                requestOptions.body = JSON.stringify(data);
+            }
         }
 
         try {

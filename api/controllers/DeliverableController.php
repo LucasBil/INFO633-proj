@@ -23,6 +23,14 @@ class DeliverableController extends Controller {
         return self::sendResponse($deliverable);
     }
 
+    public static function getByProjectId($id_project) {
+        if (!self::userAuthenticated()) {
+            return self::sendError('Unauthorized', 401);
+        }
+        $deliverables = DeliverableService::getByProjectId($id_project);
+        return self::sendResponse($deliverables);
+    }
+
     public static function create() {
         if (!self::userAuthenticated() || !self::roleGranted([ROLE::ADMIN->value, ROLE::TEACHER->value])) {
             return self::sendError('Unauthorized', 401);

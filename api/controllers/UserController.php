@@ -24,6 +24,18 @@ class UserController extends Controller {
         return self::sendError('User not found', 404);
     }
 
+    public static function getInfo() {
+        if (!self::userAuthenticated()) {
+            return self::sendError('Unauthorized', 401);
+        }
+        $id = TokenManager::getInstance()->getTokenData(self::getToken() ?? '')['id'];
+        $user = UserService::getById($id);
+        if ($user) {
+            return self::sendResponse($user);
+        }
+        return self::sendError('User not found', 404);
+    }
+
     public static function create() {
         try {
             [

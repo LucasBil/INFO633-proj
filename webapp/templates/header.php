@@ -16,12 +16,12 @@
     <header>
         <nav class="bg-white border-gray-200 dark:bg-gray-900">
             <div class="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl p-4">
-                <a href="https://flowbite.com" class="flex items-center space-x-3 rtl:space-x-reverse">
+                <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
                     <img src="/assets/Logo_Polytech_Annecy_Chambery.svg" class="h-8" alt="Flowbite Logo" />
                     <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">INFO633</span>
                 </a>
                 <div id="links" class="flex items-center space-x-6 rtl:space-x-reverse">
-                    <?php if (!isset($_COOKIE['token'])) { ?>
+                    <?php if (!isset($user)) { ?>
                         <a href="/views/login/login.php" class="text-sm  text-blue-600 dark:text-blue-500 hover:underline">Login</a>
                         <a href="/views/register/register.php" class="text-sm  text-blue-600 dark:text-blue-500 hover:underline">Register</a>
                     <?php } else { ?>
@@ -39,5 +39,7 @@
     <script src="/utils/cookies.js"></script>
     <script src="/utils/api.js"></script>
     <script src="/templates/header.js"></script>
+    <?php if (isset($user)) { ?>
+        <script src="/templates/logout.js"></script>
+    <?php } ?>
     <!--#endregion -->
-    <main class="grow-1">

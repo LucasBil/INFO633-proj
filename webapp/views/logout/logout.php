@@ -3,6 +3,8 @@
     include __DIR__ . '/../../templates/header.php';
 ?>
 
+<main class="grow-1"></main>
+
 <script>
     cookieManager.deleteCookie('token');
     cookieManager.deleteCookie('user');

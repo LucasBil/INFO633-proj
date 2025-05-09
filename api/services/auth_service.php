@@ -26,6 +26,6 @@ class AuthService extends Service {
             'email' => $users[0]->getEmail(),
             'roles' => $users[0]->getRoles(),
         ]);
-        return ['token' => $token, 'user' => $users[0]];
+        return ['token' => $token, 'expr' => time() + 3600];
     }
 }

@@ -10,7 +10,13 @@ form.addEventListener('submit', e => {
         password : password
     }).then(response => {
         cookieManager.setCookie('token', response['token']);
-        cookieManager.setCookie('user', JSON.stringify(response['user']));
-        window.location.href = '/views/home/home.php';
+        cookieManager.setCookie('expr', response['expr']);
+    }).then( _ => {
+        api.refresh();
+        api.get('user')
+        .then(user => {
+            cookieManager.setCookie('user', JSON.stringify(user));
+            window.location.href = '/views/home/home.php';
+        })
     });
 });

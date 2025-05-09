@@ -2,5 +2,7 @@
 
 enum Condition: string
 {
-    case AVAILABLE = 'available';
+    case NINE = 'nine';
+    case DOMMAGE = 'dommage';
+    case BROKEN = 'broken';
 }

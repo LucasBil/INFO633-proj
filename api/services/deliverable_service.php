@@ -39,6 +39,20 @@ class DeliverableService extends Service {
         return $deliverables[0] ?? null;
     }
 
+    public static function getByProjectId(int $id_project) {
+        $table = Deliverable::getTableName();
+        $db = DBAManager::getInstance();
+        $query = "SELECT * FROM `$table` WHERE id_project = ?;";
+        $stmt = $db->prepare($query);
+        $stmt->execute([
+            $id_project
+        ]);
+        $deliverables = $stmt->fetchAll(PDO::FETCH_FUNC, function($id, $name, $description, $date_creation, $date_closure, $id_project) {
+            return self::deliverableModel($id, $name, $description, $date_creation, $date_closure, $id_project);
+        });
+        return $deliverables;
+    }
+
     public static function create(Deliverable $deliverable) : Deliverable {
         $table = Deliverable::getTableName();
         $db = DBAManager::getInstance();
