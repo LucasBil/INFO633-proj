@@ -12,6 +12,7 @@ $routes = [
         '#^/user$#' => function () { UserController::getInfo(); },
         '#^/projects$#' => function () { ProjectController::getAll(); },
         '#^/project/(\d+)$#' => function ($id) { ProjectController::getById((int)$id); },
+        '#^/project/user/(\d+)$#' => function ($user_id) { ProjectController::getByUserId((int)$user_id); },
         '#^/works$#' => function () { WorkController::getAll(); },
         '#^/work/user/(\d+)$#' => function ($id) { WorkController::getByUserId((int)$id); },
         '#^/work/project/(\d+)$#' => function ($id) { WorkController::getByProjectId((int)$id); },

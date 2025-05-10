@@ -29,6 +29,15 @@ class ProjectController extends Controller
         }
     }
 
+    public static function getByUserId(int $user_id)
+    {
+        if (!self::userAuthenticated()) {
+            return self::sendError('Unauthorized', 401);
+        }
+        $projects = ProjectService::getByUserId($user_id);
+        return self::sendResponse($projects);
+    }
+
     public static function create()
     {
         if (!self::userAuthenticated() || !self::roleGranted([ROLE::ADMIN->value, ROLE::TEACHER->value])) {

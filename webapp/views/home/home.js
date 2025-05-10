@@ -1,16 +1,7 @@
 const user = JSON.parse(cookieManager.getCookie('user'));
 const tbody = document.querySelector('tbody#projects');
 
-function createTH(value, parent) {
-    let th = document.createElement('th');
-    th.scope = "row"
-    th.className = "px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white";
-    th.textContent = value;
-    parent.appendChild(th)
-    return th;
-}
-
-function createTag(value, parent) {
+function tagColor(value) {
     let span = document.createElement('span');
     let color = null;
     switch (value) {
@@ -26,38 +17,40 @@ function createTag(value, parent) {
         default:
             color = 'gray';
     }
-    span.className = `bg-${color}-100 text-${color}-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-${color}-700 dark:text-${color}-300 mx-2`;
-    span.textContent = value;
-    parent.appendChild(span);
+    return color;
 }
 
 
 if (user) {
-    let url = 'works';
+    let url = 'projects';
     if (user['roles'].length <= 1 && user['roles'].includes('student')) {
-        url = `work/user/${user['id']}`;
+        url = `project/user/${user['id']}`;
     }
     api.get(url)
-    .then(works => {
-        works.forEach(work => {
-            const project = work['project'];
-            let tr = document.createElement('tr');
-            tr.className = "bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600";
-            let name = createTH(project['name'], tr);
-            createTag(project['status'], name);
-            createTH(project['year'], tr);
-            createTH(project['duration'], tr);
-            createTH(`${project['creator']['first_name']} ${project['creator']['last_name']}`, tr);
-            tbody.appendChild(tr);
-    
-            let td = document.createElement('td');
-            td.className = "px-6 py-4 text-right";
-            let a = document.createElement('a');
-            a.className = "font-medium text-blue-600 dark:text-blue-500 hover:underline";
-            a.href = `/views/project/project.php?id=${project['id']}`
-            a.textContent = "View"
-            td.appendChild(a)
-            tr.appendChild(td)
+    .then(projects => {
+        projects.forEach(project => {
+            const color = tagColor(project['status'])
+            tbody.insertAdjacentHTML('beforeend',`
+                <tr>
+                    <td class="font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        ${project['name']}
+                        <span class="bg-${color}-100 text-${color}-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-${color}-700 dark:text-${color}-300 mx-2">${project['status']}</span>
+                    </td>
+                    <td>${project['year']}</td>
+                    <td>${project['duration']}</td>
+                    <td>${project['creator']['first_name']} ${project['creator']['last_name']}</td>
+                    <td class="hover:underline">
+                        <a href="/views/project/project.php?id=${project['id']}">View</a>
+                    </td>
+                </tr>
+            `);
         });
+
+        if (document.getElementById("search-table") && typeof simpleDatatables.DataTable !== 'undefined') {
+                const dataTable = new simpleDatatables.DataTable("#search-table", {
+                    searchable: true,
+                    sortable: false
+            });
+        }
     })
 }

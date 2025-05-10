@@ -4,44 +4,19 @@
 ?>
 
 <?php if (isset($user)) { ?>
-    <main class="grow-1">
-    <!-- <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-        <div class="flex items-center justify-between gap-2">
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Project 1</h5>
-            <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-gray-700 dark:text-gray-300 mx-2">not-started</span>
-        </div>
-        <p><a href="#" class="italic font-thin">Creator : Mr DuBois</a></p>
-        <p><a href="#" class="italic font-thin">Time : 2025 (10:50:20)</a></p>
-        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
-        <a href="#" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            See more
-            <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-            </svg>
-        </a>
-    </div> -->
-
-        <div class="m-3">
-            <p class="text-xl my-3">Projects :</p>
-
-            <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-6 py-3">Name</th>
-                            <th scope="col" class="px-6 py-3">Year</th>
-                            <th scope="col" class="px-6 py-3">Duration</th>
-                            <th scope="col" class="px-6 py-3">Creator</th>
-                            <th scope="col" class="px-6 py-3">
-                                <span class="sr-only">View</span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody id="projects">
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <main class="grow-1 p-3 flex flex-col gap-2">
+        <table id="search-table">
+            <thead>
+                <tr>
+                    <th><span class="flex items-center">Name</span></th>
+                    <th><span class="flex items-center">Year</span></th>
+                    <th><span class="flex items-center">Duration</span></th>
+                    <th><span class="flex items-center">Creator</span></th>
+                    <th><span class="flex items-center">Action</span></th>
+                </tr>
+            </thead>
+            <tbody id="projects"></tbody>
+        </table>
     </main>
 <?php } else { ?>
     <main class="grow-1 flex flex-col justify-center p-3">

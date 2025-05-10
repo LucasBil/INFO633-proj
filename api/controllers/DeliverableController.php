@@ -35,14 +35,20 @@ class DeliverableController extends Controller {
         if (!self::userAuthenticated() || !self::roleGranted([ROLE::ADMIN->value, ROLE::TEACHER->value])) {
             return self::sendError('Unauthorized', 401);
         }
+        $data = self::getRequestData();
         [
             'name' => $name,
             'description' => $description,
             'date_creation' => $date_creation,
-            'date_closure' => $date_closure,
             'id_project' => $id_project,
-        ] = self::getRequestData();
-        $deliverable = new Deliverable($name, $description, new DateTime($date_creation), new DateTime($date_closure), $id_project);
+        ] = $data;
+        $deliverable = new Deliverable(
+            $name,
+            $description,
+            new DateTime($date_creation),
+            isset($data['date_closure']) ? new DateTime($data['date_closure']) : null,
+            $id_project
+        );
         $deliverable = DeliverableService::create($deliverable);
         return self::sendResponse($deliverable, 201);
     }

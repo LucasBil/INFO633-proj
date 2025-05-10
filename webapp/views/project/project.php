@@ -1,6 +1,7 @@
 <?php
     $title = "Project";
     include __DIR__ . '/../../templates/header.php';
+
     if (!isset($user) || !isset($_GET['id']))
         header("Location: /views/home/home.php");
 ?>

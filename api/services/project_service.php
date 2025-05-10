@@ -41,6 +41,22 @@ class ProjectService extends Service
         return $projects[0] ?? null;
     }
 
+    public static function getByUserId(int $user_id) : array {
+        $table = Project::getTableName();
+        $db = DBAManager::getInstance();
+        $query = "SELECT p.* FROM `project` p
+                JOIN `work` w on w.id_project = p.id
+                WHERE w.id_user = ?;";
+        $stmt = $db->prepare($query);
+        $stmt->execute([
+            $user_id
+        ]);
+        $projects = $stmt->fetchAll(PDO::FETCH_FUNC, function($id, $name, $description, $status, $year, $duration, $id_creator) {
+            return self::projectModel($id, $name, $description, $status, $year, $duration, $id_creator);
+        });
+        return $projects;
+    }
+
     public static function create(Project $project): Project
     {
         $table = Project::getTableName();
