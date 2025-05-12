@@ -8,7 +8,7 @@ require_once __DIR__ . '/../models/project.php';
 class DeliverableService extends Service {
     private static function deliverableModel($id, $name, $description, $date_creation, $date_closure, $id_project): Deliverable {
         $project = ProjectService::getById($id_project);
-        $date_closure = $date_closure ? new DateTime($date_closure) : null;
+        $date_closure = new DateTime($date_closure) ?? null;
         $deliverable = new Deliverable($name, $description, new DateTime($date_creation), $date_closure, $id_project, $id);
         $deliverable->setProject($project);
         return $deliverable;
@@ -62,7 +62,7 @@ class DeliverableService extends Service {
         $stmt->execute([
             $deliverable->getName(),
             $deliverable->getDescription(),
-            $deliverable->getDateCreation()->format('Y-m-d H:i:s'),
+            $deliverable->getDateCreation()?->format('Y-m-d H:i:s'),
             $deliverable->getDateClosure()?->format('Y-m-d H:i:s'),
             $deliverable->getIdProject()
         ]);
@@ -78,8 +78,8 @@ class DeliverableService extends Service {
         $stmt->execute([
             $deliverable->getName(),
             $deliverable->getDescription(),
-            $deliverable->getDateCreation()->format('Y-m-d H:i:s'),
-            $deliverable->getDateClosure()->format('Y-m-d H:i:s'),
+            $deliverable->getDateCreation()?->format('Y-m-d H:i:s'),
+            $deliverable->getDateClosure()?->format('Y-m-d H:i:s'),
             $deliverable->getIdProject(),
             $deliverable->getId()
         ]);

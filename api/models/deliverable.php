@@ -12,7 +12,7 @@ class Deliverable extends Entity implements JsonSerializable {
 
     private ?Project $project = null;
 
-    public function __construct(string $name, string $description, DateTime $date_creation, ?DateTime $date_closure, int $id_project, ?int $id = null) {
+    public function __construct(?string $name, ?string $description, ?DateTime $date_creation, ?DateTime $date_closure, ?int $id_project, ?int $id = null) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;

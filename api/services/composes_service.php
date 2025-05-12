@@ -14,7 +14,7 @@ class ComposesService extends Service {
     private static function composesModel($id_project, $id_asset, $condition, $comment) : Composes {
         $project = ProjectService::getById($id_project);
         $asset = AssetService::getById($id_asset);
-        $condition = Condition::from($condition);
+        $condition = $condition ? Condition::from($condition) : null;
         $compose = new Composes($id_project, $id_asset, $condition, $comment);
         $compose->setProject($project);
         $compose->setAsset($asset);
@@ -84,10 +84,9 @@ class ComposesService extends Service {
         $stmt->execute([
             $compose->getIdProject(),
             $compose->getIdAsset(),
-            $compose->getCondition(),
+            $compose->getCondition()?->value,
             $compose->getComment()
         ]);
-        $compose->setId($db->lastInsertId());
         return $compose;
     }
 

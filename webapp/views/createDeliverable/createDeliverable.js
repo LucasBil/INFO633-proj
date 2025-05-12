@@ -11,16 +11,13 @@ form.addEventListener('submit', e => {
     const projects = document.querySelectorAll("input[id*='checkbox-item-']:checked");
     projects.forEach(project => {
         const projectId = project.id.split('-').pop();
-        let body = {
+        promise = api.post('deliverable', {
             name : name.value,
             description : description.value,
             date_creation : formatDateTime(`${creation.value} 00:00:00`),
-            id_project : projectId
-        }
-        if (closure.value.trim().length !== 0)
-            body['date_closure'] = formatDateTime(`${closure} ${closure_time}`)
-        
-        promise = api.post('deliverable', body)
+            id_project : projectId,
+            date_closure : closure.value ? formatDateTime(`${closure.value} ${closure_time.value}`) : null
+        })
         promises.push(promise);
     });
     Promise.all(promises)

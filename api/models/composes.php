@@ -10,10 +10,10 @@ class Composes extends Entity implements JsonSerializable {
     private ?Condition $condition;
     private ?string $comment;
 
-    private ?Project $project;
-    private ?Asset $asset;
+    private ?Project $project = null;
+    private ?Asset $asset = null;
 
-    public function __construct(int $id_project, int $id_asset, Condition $condition, ?string $comment) {
+    public function __construct(?int $id_project, ?int $id_asset, ?Condition $condition, ?string $comment) {
         $this->id_project = $id_project;
         $this->id_asset = $id_asset;
         $this->condition = $condition;
@@ -100,7 +100,7 @@ class Composes extends Entity implements JsonSerializable {
             ],
             'condition' => [
                 'type' => 'VARCHAR(100)',
-                'not_null' => true,
+                'not_null' => false,
             ],
             'comment' => [
                 'type' => 'TEXT',

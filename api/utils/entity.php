@@ -3,6 +3,17 @@ require_once __DIR__ . '/pdo.php';
 
 abstract class Entity
 {
+    public function update(array $properties) : void {
+        foreach ($properties as $key => $value) {
+            if (property_exists($user, $key)) {
+                $setter = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
+                if (!method_exists($user, $setter))
+                    continue;
+                $user->$setter($value);
+            }
+        }
+    }
+
     /**
      * Crée la table correspondante à l'entité
      * 

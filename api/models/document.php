@@ -18,7 +18,7 @@ class Document extends Entity implements JsonSerializable {
     private ?Deliverable $deliverable = null;
     private ?Asset $asset = null;
 
-    public function __construct(?string $name, DateTime $date_deposition, ?string $data, ?string $file_type, int $id_user, ?int $id_deliverable, ?int $id_asset, ?int $id = null) {
+    public function __construct(?string $name, ?DateTime $date_deposition, ?string $data, ?string $file_type, ?int $id_user, ?int $id_deliverable, ?int $id_asset, ?int $id = null) {
         $this->id = $id;
         $this->name = $name;
         $this->date_deposition = $date_deposition;

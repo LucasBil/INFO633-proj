@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../services/asset_service.php';
 require_once __DIR__ . '/../utils/controller.php';
 require_once __DIR__ . '/../models/enum/role.php';
+require_once __DIR__ . '/../models/enum/assetState.php';
 
 class AssetController extends Controller {
     public static function getAll() {
@@ -27,11 +28,13 @@ class AssetController extends Controller {
         if (!self::userAuthenticated() || !self::roleGranted([ROLE::ADMIN->value, ROLE::TECHNICIAN->value])) {
             return self::sendError('Unauthorized', 401);
         }
+        $data = self::getRequestData();
         [
             'name' => $name,
             'state' => $state,
-            'numSerie' => $numSerie,
-        ] = self::getRequestData();
+        ] = $data;
+        $numSerie = isset($data['numSerie']) ? $data['numSerie'] : null;
+        $state = AssetState::from($state);
         $asset = new Asset($name, $state, $numSerie);
         $asset = AssetService::create($asset);
         return self::sendResponse($asset);
@@ -50,6 +53,7 @@ class AssetController extends Controller {
             'state' => $state,
             'numSerie' => $numSerie,
         ] = self::getRequestData();
+        $state = AssetState::from($state);
         $asset->setName($name)
             ->setState($state)
             ->setNumSerie($numSerie);

@@ -8,7 +8,7 @@ class Asset extends Entity implements JsonSerializable {
     private ?AssetState $state;
     private ?string $numSerie;
 
-    public function __construct(string $name, AssetState $state, ?string $numSerie, ?int $id = null) {
+    public function __construct(?string $name, ?AssetState $state, ?string $numSerie, ?int $id = null) {
         $this->id = $id;
         $this->name = $name;
         $this->state = $state;

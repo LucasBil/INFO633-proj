@@ -35,18 +35,17 @@ class DeliverableController extends Controller {
         if (!self::userAuthenticated() || !self::roleGranted([ROLE::ADMIN->value, ROLE::TEACHER->value])) {
             return self::sendError('Unauthorized', 401);
         }
-        $data = self::getRequestData();
-        [
-            'name' => $name,
-            'description' => $description,
-            'date_creation' => $date_creation,
-            'id_project' => $id_project,
-        ] = $data;
+        $name = self::getRequestDataByKey('name');
+        $description = self::getRequestDataByKey('description');
+        $date_creation = self::getRequestDataByKey('date_creation');
+        $date_closure = self::getRequestDataByKey('date_closure');
+        $id_project = self::getRequestDataByKey('id_project');
+
         $deliverable = new Deliverable(
             $name,
             $description,
             new DateTime($date_creation),
-            isset($data['date_closure']) ? new DateTime($data['date_closure']) : null,
+            $date_closure ? new DateTime($date_closure) : null,
             $id_project
         );
         $deliverable = DeliverableService::create($deliverable);
@@ -61,18 +60,7 @@ class DeliverableController extends Controller {
         if (!$deliverable) {
             return self::sendError('Deliverable not found', 404);
         }
-        [
-            'name' => $name,
-            'description' => $description,
-            'date_creation' => $date_creation,
-            'date_closure' => $date_closure,
-            'id_project' => $id_project,
-        ] = self::getRequestData();
-        $deliverable->setName($name)
-            ->setDescription($description)
-            ->setDateCreation(new DateTime($date_creation))
-            ->setDateClosure(new DateTime($date_closure))
-            ->setIdProject($id_project);
+        $deliverable->update(self::getRequestData());
         $deliverable = DeliverableService::update($deliverable);
         return self::sendResponse($deliverable);
     }

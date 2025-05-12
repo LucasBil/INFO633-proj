@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../services/composes_service.php';
 require_once __DIR__ . '/../utils/controller.php';
 require_once __DIR__ . '/../models/enum/role.php';
+require_once __DIR__ . '/../models/enum/condition.php';
 
 class ComposesController extends Controller {
     public static function getAll() {
@@ -43,12 +44,13 @@ class ComposesController extends Controller {
         if (!self::userAuthenticated() || !self::roleGranted([ROLE::ADMIN->value, ROLE::TEACHER->value])) {
             return self::sendError('Unauthorized', 401);
         }
-        [
-            'id_project' => $id_project,
-            'id_asset' => $id_asset,
-            'condition' => $condition,
-            'comment' => $comment,
-        ] = self::getRequestData();
+
+        $id_project = self::getRequestDataByKey('id_project');
+        $id_asset = self::getRequestDataByKey('id_asset');
+        $condition = self::getRequestDataByKey('condition');
+        $condition = isset($condition) ? Condition::from($condition) : null;
+        $comment = self::getRequestDataByKey('comment');
+
         $compose = new Composes($id_project, $id_asset, $condition, $comment);
         $compose = ComposesService::create($compose);
         return self::sendResponse($compose);

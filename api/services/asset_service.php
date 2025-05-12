@@ -45,7 +45,7 @@ class AssetService extends Service {
         $stmt = $db->prepare($query);
         $stmt->execute([
             $asset->getName(),
-            $asset->getState(),
+            $asset->getState()->value,
             $asset->getNumSerie()
         ]);
         $asset->setId($db->lastInsertId());
@@ -59,7 +59,7 @@ class AssetService extends Service {
         $stmt = $db->prepare($query);
         $stmt->execute([
             $asset->getName(),
-            $asset->getState(),
+            $asset->getState()->value,
             $asset->getNumSerie(),
             $asset->getId()
         ]);

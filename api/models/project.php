@@ -7,14 +7,14 @@ class Project extends Entity implements JsonSerializable {
     private ?int $id;
     private ?string $name;
     private ?string $description;
-    private ?string $status;
+    private ?ProjectStatus $status;
     private ?int $year;
     private ?string $duration;
     private ?int $id_creator;
 
-    private ?User $creator;
+    private ?User $creator = null;
 
-    public function __construct(string $name, string $description, string $status, int $year, string $duration, ?int $id_creator=null, ?int $id = null) {
+    public function __construct(?string $name, ?string $description, ?ProjectStatus $status, ?int $year, ?string $duration, ?int $id_creator=null, ?int $id = null) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
@@ -48,11 +48,11 @@ class Project extends Entity implements JsonSerializable {
         $this->description = $description;
     }
 
-    public function getStatus(): ?string {
+    public function getStatus(): ?ProjectStatus {
         return $this->status;
     }
 
-    public function setStatus(?string $status): void {
+    public function setStatus(?ProjectStatus $status): void {
         $this->status = $status;
     }
 
@@ -131,10 +131,10 @@ class Project extends Entity implements JsonSerializable {
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'status' => $this->status,
+            'status' => $this->status->value,
             'year' => $this->year,
             'duration' => $this->duration,
-            'creator' => $this->creator ?? null
+            'creator' => $this->creator
         ];
     }
 }

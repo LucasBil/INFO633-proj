@@ -3,12 +3,14 @@
 require_once __DIR__ . '/../utils/service.php';
 require_once __DIR__ . '/../models/project.php';
 require_once __DIR__ . '/../models/user.php';
+require_once __DIR__ . '/../models/enum/projectStatus.php';
 require_once __DIR__ . '/user_service.php';
 
 class ProjectService extends Service
 {
     private static function projectModel($id, $name, $description, $status, $year, $duration, $id_creator): Project {
         $user = UserService::getById($id_creator);
+        $status = ProjectStatus::from($status) ?? null;
         $project = new Project($name, $description, $status, $year, $duration, $id_creator, $id);
         $project->setCreator($user);
         return $project;
@@ -66,7 +68,7 @@ class ProjectService extends Service
         $stmt->execute([
             $project->getName(),
             $project->getDescription(),
-            $project->getStatus(),
+            $project->getStatus()->value,
             $project->getYear(),
             $project->getDuration(),
             $project->getIdCreator()
@@ -84,7 +86,7 @@ class ProjectService extends Service
         $stmt->execute([
             $project->getName(),
             $project->getDescription(),
-            $project->getStatus(),
+            $project->getStatus()->value,
             $project->getYear(),
             $project->getDuration(),
             $project->getId()

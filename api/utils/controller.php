@@ -17,6 +17,10 @@ abstract class Controller {
         return json_decode($json, true);
     }
 
+    public static function getRequestDataByKey(string $key) {
+        return self::getRequestData()[$key] ?? null;
+    }
+
     public static function getToken(): ?string {
         $headers = getallheaders();
         if (isset($headers['Authorization'])) {

@@ -65,15 +65,7 @@ class UserController extends Controller {
             if (!$user) {
                 return self::sendError('User not found', 404);
             }
-            foreach (self::getRequestData() as $key => $value) {
-                if (property_exists($user, $key)) {
-                    $setter = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
-                    if (!method_exists($user, $setter)) {
-                        return self::sendError('Invalid request data', 400);
-                    }
-                    $user->$setter($value);
-                }
-            }
+            $user->update(self::getRequestData());
             $user = UserService::update($user);
             return self::sendResponse($user);
         } catch (PDOException $e) {

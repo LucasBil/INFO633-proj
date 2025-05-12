@@ -25,9 +25,16 @@ class API {
 
         if (data) {
             if (data instanceof FormData) {
+                for (const [key, value] of data) {
+                    if (value === null || value === '')
+                        data.delete(key);
+                }
                 requestOptions.body = data;
                 delete requestOptions.headers['Content-Type'];
             } else {
+                data = Object.fromEntries(
+                    Object.entries(data).filter(([_, v]) => v != null && v !== '')
+                );
                 requestOptions.body = JSON.stringify(data);
             }
         }

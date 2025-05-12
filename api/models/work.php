@@ -10,7 +10,7 @@ class Work extends Entity implements JsonSerializable {
     private ?User $user = null;
     private ?Project $project = null;
 
-    public function __construct(int $id_user, int $id_project) {
+    public function __construct(?int $id_user, ?int $id_project) {
         $this->id_user = $id_user;
         $this->id_project = $id_project;
     }

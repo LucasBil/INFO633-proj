@@ -6,6 +6,8 @@
 ?>
 
 <main class="grow-1 p-3">
+    <h1 class="text-xl">Project : <span class="underline" id="name"></span><span id="tag"></span></h1>
+    <p>NumSérie : <span id="numSerie"></span></p>
 </main>
 
 <script src="/views/asset/asset.js"></script>

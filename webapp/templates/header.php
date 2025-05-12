@@ -134,8 +134,8 @@
                         </div>
                         <ul class="pl-5 text-blue-600">
                             <li>
-                                <a href="#" class="flex items-center p-2 rounded-lg group"> 
-                                    Manage Asset
+                                <a href="/views/createAsset/createAsset.php" class="flex items-center p-2 rounded-lg group"> 
+                                    Create Asset
                                 </a>
                             </li>
                         </ul>
