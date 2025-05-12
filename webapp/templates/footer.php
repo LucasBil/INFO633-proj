@@ -4,16 +4,16 @@
         </span>
         <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
             <li>
-                <p class="hover:underline me-4 md:me-6">Lucas BILLY</p>
+                <a href="https://github.com/LucasBil" class="hover:underline me-4 md:me-6">Lucas BILLY</a>
             </li>
             <li>
-                <p class="hover:underline me-4 md:me-6">Louis AMOUDRUZ</p>
+                <a href="https://github.com/TadF0in" class="hover:underline me-4 md:me-6">Louis AMOUDRUZ</a>
             </li>
             <li>
-                <p class="hover:underline me-4 md:me-6">Corentin CAMPELLO</p>
+                <a href="https://github.com/Corentin-ccl" class="hover:underline me-4 md:me-6">Corentin CAMPELLO</a>
             </li>
             <li>
-                <p class="hover:underline me-4 md:me-6">Maxence AMBERT</p>
+                <a href="https://github.com/therealmaxence" class="hover:underline me-4 md:me-6">Maxence AMBERT</a>
             </li>
         </ul>
         </div>

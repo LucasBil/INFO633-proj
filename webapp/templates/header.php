@@ -138,6 +138,11 @@
                                     Create Asset
                                 </a>
                             </li>
+                            <li>
+                                <a href="/views/listAsset/listAsset.php" class="flex items-center p-2 rounded-lg group"> 
+                                    View all assets
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 <?php } ?>
