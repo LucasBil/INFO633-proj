@@ -5,12 +5,58 @@ abstract class Entity
 {
     public function update(array $properties) : void {
         foreach ($properties as $key => $value) {
-            if (property_exists($user, $key)) {
-                $setter = 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $key)));
-                if (!method_exists($user, $setter))
-                    continue;
-                $user->$setter($value);
+            $setter = $this->buildSetterName($key);
+            if (!method_exists($this, $setter)) {
+                continue;
             }
+            $value = $this->castSetterParameter($setter, $value);
+            $this->$setter($value);
+        }
+    }
+
+    /**
+     * Convertit le nom de propriété en nom de setter (ex: foo_bar => setFooBar).
+     */
+    private function buildSetterName(string $property): string
+    {
+        return 'set' . str_replace(' ', '', ucwords(str_replace('_', ' ', $property)));
+    }
+
+    /**
+     * Tente de caster la valeur en fonction du type attendu par le setter.
+     */
+    private function castSetterParameter(string $setter, mixed $value): mixed
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        try {
+            $reflection = new \ReflectionMethod($this, $setter);
+            $params = $reflection->getParameters();
+
+            if (empty($params)) {
+                return $value;
+            }
+
+            $type = $params[0]->getType();
+            if (!$type instanceof \ReflectionNamedType) {
+                return $value;
+            }
+
+            $typeName = $type->getName();
+
+            return match ($typeName) {
+                \DateTime::class => new \DateTime($value),
+                'int' => (int)$value,
+                'float' => (float)$value,
+                'string' => (string)$value,
+                'bool' => (bool)$value,
+                default => $value
+            };
+
+        } catch (\Exception $e) {
+            return $value;
         }
     }
 
