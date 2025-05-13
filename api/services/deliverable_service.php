@@ -8,7 +8,7 @@ require_once __DIR__ . '/../models/project.php';
 class DeliverableService extends Service {
     private static function deliverableModel($id, $name, $description, $date_creation, $date_closure, $id_project): Deliverable {
         $project = ProjectService::getById($id_project);
-        $date_closure = new DateTime($date_closure) ?? null;
+        $date_closure = $date_closure ? new DateTime($date_closure) : null;
         $deliverable = new Deliverable($name, $description, new DateTime($date_creation), $date_closure, $id_project, $id);
         $deliverable->setProject($project);
         return $deliverable;
