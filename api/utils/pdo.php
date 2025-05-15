@@ -21,10 +21,10 @@ class DBAManager {
     public static function getInstance(): DBAManager {
         if (self::$instance === null) {
             self::$instance = new DBAManager(
-                $_ENV['DB_HOST'] ?? 'mysql:host=mariadb',
-                $_ENV['DB_USER'] ?? 'root',
-                $_ENV['DB_PASSWORD'] ?? 'root',
-                $_ENV['DB_DATABASE'] ?? 'info633'
+                "mysql:host=" . getenv('DB_HOST'),
+                getenv('DB_USER'),
+                getenv('DB_PASSWORD'),
+                getenv('DB_DATABASE')
             );
             self::generateDatabase();
         }

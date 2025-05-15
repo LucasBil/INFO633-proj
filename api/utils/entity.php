@@ -46,12 +46,13 @@ abstract class Entity
 
             $typeName = $type->getName();
 
-            return match ($typeName) {
-                \DateTime::class => new \DateTime($value),
-                'int' => (int)$value,
-                'float' => (float)$value,
-                'string' => (string)$value,
-                'bool' => (bool)$value,
+            return match (true) {
+                is_a($typeName, \DateTime::class, true) => new \DateTime($value),
+                enum_exists($typeName) => $typeName::from($value),
+                $typeName === 'int' => (int)$value,
+                $typeName === 'float' => (float)$value,
+                $typeName === 'string' => (string)$value,
+                $typeName === 'bool' => filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? false,
                 default => $value
             };
 

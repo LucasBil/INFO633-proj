@@ -89,24 +89,19 @@ class User extends Entity implements JsonSerializable {
             'email' => [
                 'type' => 'VARCHAR(255)',
                 'unique' => true,
-                'not_null' => true,
             ],
             'password' => [
                 'type' => 'VARCHAR(255)',
-                'not_null' => true,
             ],
             'first_name' => [
                 'type' => 'VARCHAR(255)',
-                'not_null' => true,
             ],
             'last_name' => [
                 'type' => 'VARCHAR(255)',
-                'not_null' => true,
             ],
             'roles' => [
                 'type' => 'JSON',
                 'default' => json_encode([Role::STUDENT->value]),
-                'not_null' => true,
             ],
         ];
     }

@@ -172,13 +172,13 @@ class DocumentService extends Service {
     public static function download(Document $document) : void {
         $fullpath = $document->getData();
         $name = $document->getName() . '.' . $document->getFileType();
-        header('Content-Description: File Transfer');
+
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="'. $name .'"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
+        header('Content-Disposition: attachment; filename="' . $name . '"');
         header('Content-Length: ' . filesize($fullpath));
+        header('Cache-Control: no-cache');
+        header('Pragma: no-cache');
+
         // Vider le buffer de sortie
         flush();
         // Lire le fichier et l'envoyer au client

@@ -49,6 +49,8 @@ class API {
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.includes('application/json')) {
                 return await response.json();
+            } else if (contentType && (contentType.includes('application/octet-stream') || contentType.includes('application/zip')) ) {
+                return await response.blob();
             } else {
                 return await response.text();
             }

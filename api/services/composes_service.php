@@ -93,10 +93,10 @@ class ComposesService extends Service {
     public static function update(Composes $compose) : Composes {
         $table = Composes::getTableName();
         $db = DBAManager::getInstance();
-        $query = "UPDATE `$table` SET condition = ?, comment = ? WHERE id_project = ? AND id_asset = ?;";
+        $query = "UPDATE `$table` SET `condition` = ?, `comment` = ? WHERE id_project = ? AND id_asset = ?;";
         $stmt = $db->prepare($query);
         $stmt->execute([
-            $compose->getCondition(),
+            $compose->getCondition()?->value,
             $compose->getComment(),
             $compose->getIdProject(),
             $compose->getIdAsset(),

@@ -48,15 +48,7 @@ class AssetController extends Controller {
         if (!$asset) {
             return self::sendError('Asset not found', 404);
         }
-        [
-            'name' => $name,
-            'state' => $state,
-            'numSerie' => $numSerie,
-        ] = self::getRequestData();
-        $state = AssetState::from($state);
-        $asset->setName($name)
-            ->setState($state)
-            ->setNumSerie($numSerie);
+        $asset->update(self::getRequestData());
         $asset = AssetService::update($asset);
         return self::sendResponse($asset);
     }

@@ -28,6 +28,7 @@ if (user) {
     }
     api.get(url)
     .then(projects => {
+        createChart(projects, ["not_started", "in_progress", "completed", "dismantled"]);
         projects.forEach(project => {
             const color = tagColor(project['status'])
             tbody.insertAdjacentHTML('beforeend',`
@@ -53,4 +54,77 @@ if (user) {
             });
         }
     })
+}
+
+function createChart(projects, labels) {
+    let datas = [];
+    labels.forEach(label => {
+        let data = projects.filter(p => p['status'] == label);
+        datas.push(
+            Math.round((data.length / projects.length)*100)
+        );
+    });
+
+    const getChartOptions = (datas, labels) => {
+        return {
+            series: datas,
+            colors: ["#333037", "#2450B4", "#065F4B", "#991B61"],
+            chart: {
+                height: 420,
+                width: "100%",
+                type: "pie",
+            },
+            stroke: {
+                colors: ["white"],
+                lineCap: "",
+            },
+            plotOptions: {
+                pie: {
+                    labels: {
+                        show: true,
+                    },
+                    size: "100%",
+                    dataLabels: {
+                        offset: -25
+                    }
+                },
+            },
+            labels: labels,
+            dataLabels: {
+                enabled: true,
+                style: {
+                    fontFamily: "Inter, sans-serif",
+                },
+            },
+            legend: {
+                position: "bottom",
+                fontFamily: "Inter, sans-serif",
+            },
+            yaxis: {
+                labels: {
+                    formatter: function (value) {
+                        return value + "%"
+                    },
+                },
+            },
+            xaxis: {
+                labels: {
+                    formatter: function (value) {
+                        return value  + "%"
+                    },
+                },
+                axisTicks: {
+                    show: false,
+                },
+                axisBorder: {
+                    show: false,
+                },
+            },
+        }
+    }
+
+    if (document.getElementById("pie-chart") && typeof ApexCharts !== 'undefined') {
+        const chart = new ApexCharts(document.getElementById("pie-chart"), getChartOptions(datas, labels));
+        chart.render();
+    }
 }

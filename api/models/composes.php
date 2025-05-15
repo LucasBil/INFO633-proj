@@ -99,12 +99,10 @@ class Composes extends Entity implements JsonSerializable {
                 ],
             ],
             'condition' => [
-                'type' => 'VARCHAR(100)',
-                'not_null' => false,
+                'type' => 'VARCHAR(100)'
             ],
             'comment' => [
-                'type' => 'TEXT',
-                'not_null' => false,
+                'type' => 'TEXT'
             ],
         ];
     }

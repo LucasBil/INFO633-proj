@@ -18,13 +18,51 @@ form.addEventListener('submit', e => {
         duration : `${duration.value}:00`,
     })
     .then(project => {
-        //window.location.href = `/views/project/project.php?id=${project['id']}`;
+        let promises = []
+        const workers = Array.from(document.querySelectorAll("input[id*='w-checkbox-item-']")).filter(input => {
+            let init = input.dataset.custom == "true";
+            return init !== input.checked;
+        });
+        const assets = Array.from(document.querySelectorAll("input[id*='a-checkbox-item-']")).filter(input => {
+            let init = input.dataset.custom == "true";
+            return init !== input.checked;
+        });
+
+        workers.forEach(worker => {
+            const userId = worker.id.split('-').pop();
+            if (worker['checked']) {
+                promise = api.post('work', {
+                    user_id : userId,
+                    project_id : project['id']
+                });
+            } else {
+                promise = api.delete(`work/user/${userId}/project/${project['id']}`);
+            }
+            promises.push(promise);
+        })
+
+        assets.forEach(asset => {
+            const asset_id = asset.id.split('-').pop();
+            if (asset['checked']) {
+                promise = api.post('compose', {
+                    id_project : project['id'],
+                    id_asset : asset_id
+                });
+            } else {
+                promise = api.delete(`compose/project/${project['id']}/asset/${asset_id}`);
+            }
+            promises.push(promise);
+        })
+
+        Promise.all(promises)
+        .then(_ => {
+            window.location.href = `/views/project/project.php?id=${project['id']}`;
+        });
     });
 });
 
 api.get(`project/${id}`)
 .then(project => {
-    console.log(project);
     const name = document.querySelector('#name');
     const description = document.querySelector('#description');
     const status = document.querySelector('#status');
@@ -35,5 +73,67 @@ api.get(`project/${id}`)
     description.value = project['description'];
     status.value = project['status'];
     year.value = project['year'];
-    duration.value = project['duration'].split(':')[0];
+    let times = project['duration'].split(':');
+    duration.value = `${times[0]}:${times[1]}`;
+});
+
+api.get(`work/project/${id}`)
+.then(works => {
+    api.get('users')
+    .then(users => {
+        const ul = document.querySelector('#users');
+        users.forEach(user => {
+            let checked = works.some(work => work['user']['id'] === user['id']);
+            ul.insertAdjacentHTML('beforeend',`
+                <li>
+                    <div class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
+                        <input ${checked ? 'checked' : ''} data-custom="${checked}" id="w-checkbox-item-${user['id']}" type="checkbox" value="${user['first_name']} ${user['last_name']} ${user['email']}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                        <label for="w-checkbox-item-${user['id']}" class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">${user['first_name']} ${user['last_name']} (${user['email']})</label>
+                    </div>
+                </li>
+            `);
+        });
+        const search = document.querySelector('#input-group-search-workers');
+        const lis = document.querySelectorAll("li:has(> div > input[id*='w-checkbox-item-'])");
+        search.addEventListener('input', e => {
+            lis.forEach(li => {
+                let input = li.querySelector("input[id*='w-checkbox-item-']");
+                if (search.value.length == 0 || input.value.includes(search.value))
+                    li.classList.remove('hidden')
+                else
+                    li.classList.add('hidden')
+            })
+        });
+    });
+});
+
+api.get(`compose/project/${id}`)
+.then(composes => {
+    api.get('assets')
+    .then(assets => {
+        const ul = document.querySelector('#assets');
+        assets.forEach(asset => {
+            let checked = composes.some(compose => compose['asset']['id'] === asset['id']);
+            ul.insertAdjacentHTML('beforeend',`
+                <li>
+                    <div class="flex items-center p-2 rounded-sm hover:bg-gray-100 dark:hover:bg-gray-600">
+                        <input ${checked ? 'checked' : ''} data-custom="${checked}" id="a-checkbox-item-${asset['id']}" type="checkbox" value="${asset['name']} ${asset['numSerie']}" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                        <label for="a-checkbox-item-${asset['id']}" class="w-full ms-2 text-sm font-medium text-gray-900 rounded-sm dark:text-gray-300">${asset['name']} (${asset['numSerie']})</label>
+                    </div>
+                </li>
+            `);
+        });
+        const search = document.querySelector('#input-group-search-assets');
+        const lis = document.querySelectorAll("li:has(> div > input[id*='a-checkbox-item-'])");
+        search.addEventListener('input', e => {
+            lis.forEach(li => {
+                let input = li.querySelector("input[id*='a-checkbox-item-']");
+                if (search.value.length == 0 || input.value.includes(search.value))
+                    li.classList.remove('hidden')
+                else
+                    li.classList.add('hidden')
+            })
+        });
+    });
+
 });

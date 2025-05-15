@@ -48,16 +48,13 @@ class Asset extends Entity implements JsonSerializable {
                 'primary_key' => true,
             ],
             'name' => [
-                'type' => 'VARCHAR(100)',
-                'not_null' => true,
+                'type' => 'VARCHAR(100)'
             ],
             'state' => [
-                'type' => 'VARCHAR(100)',
-                'not_null' => true,
+                'type' => 'VARCHAR(100)'
             ],
             'numSerie' => [
-                'type' => 'VARCHAR(100)',
-                'not_null' => false,
+                'type' => 'VARCHAR(100)'
             ],
         ];
     }

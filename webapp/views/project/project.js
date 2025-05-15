@@ -32,26 +32,60 @@ api.get(`project/${id}`)
 api.get(`deliverable/project/${id}`)
 .then(deliverables => {
     const ol = document.querySelector('#deliverables');
+    deliverables.sort((a, b) => {
+        return b["date_closure"] ? new Date(b["date_closure"]) - new Date(a["date_closure"]) : 1;
+    });
     deliverables.forEach(deliverable => {
         createProgressDeliverable(deliverable['id'], deliverable['name'], deliverable['description'], deliverable['date_closure'], ol);
     });
 })
 
-api.get(`compose/project/${id}`)
-.then(composes => {
-    const div = document.querySelector('#assets')
-    composes.forEach(compose => {
-        const asset = compose['asset'];
-        createAssetCard(asset['id'], `${asset['name']} ${asset['numSerie'] ? `(${asset['numSerie']})` : ''}`, asset['comment'], div)
+api.get(`work/project/${id}`)
+.then(works => {
+    const users = document.querySelector("#users")
+    works.forEach(work => {
+        user = work['user'];
+        shortname = user['first_name'].substring(0,1).toUpperCase() + user['last_name'].substring(0,1).toUpperCase();
+        users.insertAdjacentHTML('beforeend',`
+            <div class="flex items-center gap-4">
+                <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                    <span class="font-medium text-gray-600 dark:text-gray-300">${shortname}</span>
+                </div>
+                <div class="font-medium dark:text-white">
+                    <div>${user['first_name']} ${user['last_name']}</div>
+                </div>
+            </div>
+        `);
     });
 })
 
-function createProgressDeliverable(id, title, description, timeline, parent) {
-    const end = new Date(timeline);
-    const now = new Date();
-    let _description = marked.parse(description ?? '');
+api.get(`compose/project/${id}`)
+.then(composes => {
+    const tbody = document.querySelector('tbody')
+    composes.forEach(compose => {
+        const asset = compose['asset'];
+        tbody.insertAdjacentHTML('beforeend',`
+            <tr>
+                <td>${asset['name']}</td>
+                <td>${asset['numSerie']}</td>
+                <td><a href="/views/asset/asset.php?id=${asset['id']}">Views</a></td>
+            </tr>
+        `);
+    });
+    if (document.getElementById("search-table") && typeof simpleDatatables.DataTable !== 'undefined') {
+        const dataTable = new simpleDatatables.DataTable("#search-table", {
+            searchable: true,
+            sortable: false
+        });
+    }
+})
 
-    let svg = end < now ?
+function createProgressDeliverable(id, title, description, timeline, parent) {
+    const end = timeline ? new Date(timeline) : null;
+    const now = new Date();
+    let _description = marked.parse(description ?? 'No description');
+
+    let svg = end < now && end ?
     `<span class="absolute flex items-center justify-center w-8 h-8 bg-green-200 rounded-full -start-4 ring-4 ring-white dark:ring-gray-900 dark:bg-green-900">
         <svg class="w-3.5 h-3.5 text-green-500 dark:text-green-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5.917 5.724 10.5 15 1.5"/>
@@ -66,18 +100,9 @@ function createProgressDeliverable(id, title, description, timeline, parent) {
         <li class="mb-10 ms-6">            
             ${svg}
             <h3 class="font-medium leading-tight underline">
-                <a href="/views/deliverable/deliverable.php?id=${id}">${title} (${timeline})</a>
+                <a href="/views/deliverable/deliverable.php?id=${id}">${title} ${timeline ? `(${timeline})` : '(unlimited)'}</a>
             </h3>
             <p class="text-sm">${_description}</p>
         </li>
     `);   
-}
-
-function createAssetCard(id, title, comment, parent) {
-    parent.insertAdjacentHTML('beforeend',`
-        <a href="/views/asset/asset.php?id=${id}" class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 min-w-[25%] grow-1">
-            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">${title}</h5>
-            <p class="font-normal text-gray-700 dark:text-gray-400">${comment}</p>
-        </a>
-    `);
 }

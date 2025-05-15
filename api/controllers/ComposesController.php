@@ -64,12 +64,7 @@ class ComposesController extends Controller {
         if (!$compose) {
             return self::sendError('Asset not found', 404);
         }
-        [
-            'condition' => $condition,
-            'comment' => $comment,
-        ] = self::getRequestData();
-        $compose->setCondition($condition)
-            ->setComment($comment);
+        $compose->update(self::getRequestData());
         $compose = ComposesService::update($compose);
         return self::sendResponse($compose);
     }

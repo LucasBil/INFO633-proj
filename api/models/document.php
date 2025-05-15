@@ -133,21 +133,17 @@ class Document extends Entity implements JsonSerializable {
                 'primary_key' => true,
             ],
             'name' => [
-                'type' => 'VARCHAR(100)',
-                'not_null' => true,
+                'type' => 'VARCHAR(100)'
             ],
             'date_deposition' => [
                 'type' => 'DATETIME',
-                'not_null' => true,
                 'default' => 'NOW()',
             ],
             'data' => [
-                'type' => 'VARCHAR(150)',
-                'not_null' => true,
+                'type' => 'VARCHAR(150)'
             ],
             'file_type' => [
-                'type' => 'VARCHAR(50)',
-                'not_null' => false,
+                'type' => 'VARCHAR(50)'
             ],
             'id_user' => [
                 'type' => 'INT',

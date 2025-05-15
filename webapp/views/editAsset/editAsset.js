@@ -29,5 +29,4 @@ api.get(`asset/${id}`)
     name.value = asset['name'];
     state.value = asset['state'];
     numSerie.value = asset['numSerie'];
-}
-);
+});

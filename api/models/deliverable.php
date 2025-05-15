@@ -86,20 +86,16 @@ class Deliverable extends Entity implements JsonSerializable {
             ],
             'name' => [
                 'type' => 'VARCHAR(100)',
-                'not_null' => true,
             ],
             'description' => [
                 'type' => 'TEXT',
-                'not_null' => false,
             ],
             'date_creation' => [
                 'type' => 'DATETIME',
-                'not_null' => true,
                 'default' => 'NOW()',
             ],
             'date_closure' => [
-                'type' => 'DATETIME',
-                'not_null' => false,
+                'type' => 'DATETIME'
             ],
             'id_project' => [
                 'type' => 'INT',

@@ -96,24 +96,20 @@ class Project extends Entity implements JsonSerializable {
                 'primary_key' => true
             ],
             'name' => [
-                'type' => 'VARCHAR(100)',
-                'not_null' => true
+                'type' => 'VARCHAR(100)'
             ],
             'description' => [
                 'type' => 'TEXT'
             ],
             'status' => [
                 'type' => 'VARCHAR(50)',
-                'not_null' => true,
                 'default' => ProjectStatus::NOT_STARTED->value
             ],
             'year' => [
                 'type' => 'INT',
-                'not_null' => true
             ],
             'duration' => [
                 'type' => 'TIME',
-                'not_null' => true
             ],
             'id_creator' => [
                 'type' => 'INT',

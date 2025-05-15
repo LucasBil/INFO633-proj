@@ -13,103 +13,92 @@ api.get(`deliverable/${id}`)
     date_creation.textContent = deliverable['date_creation'];
     date_closure.textContent = deliverable['date_closure'];
     description.innerHTML = marked.parse(deliverable['description'] ?? '');
-})
-.catch( _  => {
-    window.location.href = '/views/404/404.php';
-})
-.then( _ => {
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const name = form.querySelector('#name-ressource');
-            const url = form.querySelector('#url')
-            const file = form.querySelector('#file_input')
+});
 
-            const formData = new FormData();
-            formData.append('id_deliverable', id);
-            formData.append('name', name.value);
-            if (url)
-                formData.append('url', url.value ?? '')
-            if (file)
-                formData.append('file', file.files[0]);
-            api.post('document', formData)
-            .then(_document => {
-                window.location.reload();
-            })
-        });
-    })
+api.get(`document/deliverable/${id}`)
+.then(documents => {
+    const tbody = document.querySelector("tbody");
+    let promises = [];
+    documents.forEach(_document => {
+        let promise = api.get(`document/download/${id}`)
+        .then(blob => {
+            const url = window.URL.createObjectURL(new Blob([blob], {type: "application/octet-stream"}));
+            tbody.insertAdjacentHTML('beforeend',`
+                <tr>
+                    <td class="font-medium text-gray-900 whitespace-nowrap">${_document['name']}</td>
+                    <td>${_document['file_type']}</td>
+                    <td>${_document['date_deposition']}</td>
+                    <td>${_document['user']['first_name']} ${_document['user']['last_name']}</td>
+                    <td class="flex gap-2 justify-between">
+                        <a href="#" class="grow-1 flex justify-center" id="delete_${_document['id']}">
+                            <svg data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" width="24px" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"></path>
+                            </svg>
+                        </a>
+                        <span>|</span>
+                        <a class="grow-1 flex justify-center" id="download_${_document['id']}" href="${url}" download="${_document['name']}.${_document['file_type']}">
+                            <svg data-slot="icon" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" width="24px" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9.75v6.75m0 0-3-3m3 3 3-3m-8.25 6a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"></path>
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+            `);
 
-    const downloads = document.querySelector('#downloads');
-    api.get(`document/download/deliverable/${id}`)
-    .then(zip => {
-        const blob = new Blob([zip]);
-        const url = URL.createObjectURL(blob);
-        downloads.href = url;
-        downloads.download = `deliverable.zip`;
+            tbody.addEventListener('click', e => {
+                const deleteButton = e.target.closest('a[id^="delete_"]');
+                if (deleteButton) {
+                    const document_id = deleteButton.id.split('_')[1];
+                    api.delete(`document/${document_id}`)
+                    .then(document => {
+                        window.location.reload();
+                    })
+                }
+            });
+        })
+        promises.push(promise);
     });
 
-    api.get(`document/deliverable/${id}`)
-    .then(documents => {
-        const tbody = document.querySelector("#documents");
-        documents.forEach(_document => {
-            createDocumentLine(_document['id'], _document['name'], _document['file_type'], _document['date_deposition'],  `${_document['user']['first_name']} ${_document['user']['last_name']}`, _document['data'], tbody)
-            const DOM_download = document.querySelector(`a[id*='download_${_document['id']}']`);
-            const DOM_delete = document.querySelector(`a[id*='delete_${_document['id']}']`);
-            if (DOM_download)
-                download(DOM_download, _document);
-            _delete(DOM_delete, _document);
-        });
+    Promise.all(promises)
+    .then( _ => {
+        if (document.getElementById("filter-table") && typeof simpleDatatables.DataTable !== 'undefined') {
+            const dataTable = new simpleDatatables.DataTable("#filter-table", {
+                tableRender: (_data, table, type) => {
+                    if (type === "print") {
+                        return table
+                    }
+                    const tHead = table.childNodes[0]
+                    const filterHeaders = {
+                        nodeName: "TR",
+                        attributes: {
+                            class: "search-filtering-row"
+                        },
+                        childNodes: tHead.childNodes[0].childNodes.map(
+                            (_th, index) => ({nodeName: "TH",
+                                childNodes: [
+                                    {
+                                        nodeName: "INPUT",
+                                        attributes: {
+                                            class: "datatable-input",
+                                            type: "search",
+                                            "data-columns": "[" + index + "]"
+                                        }
+                                    }
+                                ]})
+                        )
+                    }
+                    tHead.childNodes.push(filterHeaders)
+                    return table
+                }
+            });
+        }
     })
 });
 
-function createDocumentLine(id, filename, type, date, user, data, parent) {
-    return parent.insertAdjacentHTML('beforeend',`
-        <tr class="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700 border-gray-200">
-            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                ${type == null ?
-                    `<a href="${data}" target="_blank" class="underline">${filename}</a>` :
-                    `${filename}`
-                }
-            </th>
-            <td class="px-6 py-4">
-                ${type ?? ''}
-            </td>
-            <td class="px-6 py-4">
-                ${date}
-            </td>
-            <td class="px-6 py-4">
-                ${user}
-            </td>
-            <td class="px-6 py-4 flex justify-between">
-                ${type != null ?
-                    `<a id="download_${id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Download</a>` :
-                    ``
-                }
-                <a id="delete_${id}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</a>
-            </td>
-        </tr>
-    `);
-}
-
-function download(a, _document) {
-    const id = a.id.split('_')[1];
-    api.get(`document/download/${id}`)
-    .then(response => {
-        const data = JSON.stringify(response, null, 2);
-        const blob = new Blob([data], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        a.href = url;
-        a.download = `${_document['name']}.${_document['file_type']}`;
-    })
-}
-
-function _delete(a, _document) {
-    a.addEventListener('click', e => {
-        const id = a.id.split('_')[1];
-        api.delete(`document/${id}`)
-        .then(response => {
-            window.location.reload();
-        })
-    })
-}
+api.get(`document/download/deliverable/${id}`)
+.then(blob => {
+    const a = document.querySelector("#downloads");
+    const url = window.URL.createObjectURL(new Blob([blob], {type: "application/zip"}));
+    a.href = url;
+    a.download = "deliverable.zip";
+});

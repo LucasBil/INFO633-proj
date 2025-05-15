@@ -110,16 +110,6 @@
                                     Create Deliverable
                                 </a>
                             </li>
-                            <li>
-                                <a href="/views/updateProject/updateProject.php" class="flex items-center p-2 rounded-lg group"> 
-                                    Update Project
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/views/updateDeliverable/updateDeliverable.php" class="flex items-center p-2 rounded-lg group"> 
-                                    Update Deliverable
-                                </a>
-                            </li>
                         </ul>
                     </li>
                 <?php } ?>
@@ -154,6 +144,7 @@
 
     <!--#region script utils -->
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.46.0/dist/apexcharts.min.js"></script>
     <script src="/utils/cookies.js"></script>
     <script src="/utils/api.js"></script>
     <script src="/templates/header.js"></script>
