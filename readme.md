@@ -44,6 +44,10 @@ Au travers de cette application et selon la conception choisie, il sera intéres
 ├───docker
 │   └───php
 └───webapp
+    ├───assets
+    ├───templates
+    ├───utils
+    └───views
 ```
 # Techno & Commande
 ```
